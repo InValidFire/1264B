@@ -63,24 +63,50 @@ void pre_auton()
 
 task autonomous()
 {
+	/*
 	//1. Turns to face Mobile Goal on Parking Location
-	motor[FrontLeft] = 63;
-	motor[BackLeft] = 63;
-	motor[FrontRight] = 126;
-	motor[BackRight] = 126;
-	delay(500);
+	motor[FrontLeft] = -127;
+	motor[BackLeft] = -127;
+	motor[FrontRight] = 127;
+	motor[BackRight] = 127;
+	delay(300); //GUESTIMATE
 	//2. Moves forward to Mobile Goal on Parking Location
 	motor[FrontLeft] = 126;
 	motor[BackLeft] = 126;
 	motor[FrontRight] = 126;
 	motor[BackRight] = 126;
-	delay(1250);
-	//3. Stops completely
+	delay(1250); //GUESTIMATE
+	//3. Picks up Mobile Goal
+	motor[Manipulator1] = 127;
+	motor[Manipulator2] = 127;
+	delay(750); //GUESTIMATE
+	//4. Turns around facing the scoring platform
+	motor[FrontLeft] = 127;
+	motor[BackLeft] = 127;
+	motor[FrontRight] = -127;
+	motor[BackRight] = -127;
+	delay(500); //GUESTIMATE!
+	//5. Moves towards scoring platform
+	motor[FrontLeft] = 127;
+	motor[BackLeft] = 127;
+	motor[FrontRight] = 127;
+	motor[BackRight] = 127;
+	delay(1250); //GUESTIMATE
+	//6. Drops Mobile Goal (Part 1) (Lowers Manipulator)
+	motor[Manipulator1] = -127;
+	motor[Manipulator2] = -127;
+	//6.5. Drops Mobile Goal (Part 2) (Backs Up)
+	motor[FrontLeft] = -127;
+	motor[BackLeft] = -127;
+	motor[FrontRight] = -127;
+	motor[BackRight] = -127;
+	//7. Stops completely
 	motor[FrontLeft] = 0;
 	motor[BackLeft] = 0;
 	motor[FrontRight] = 0;
 	motor[BackRight] = 0;
-}
+	*/
+	}
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -92,9 +118,6 @@ task autonomous()
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-/*
- *NOTICE: This code is for the incorrect claw configuration, thanks Nick...
-*/
 task usercontrol()
 {
 	//connect the cortex too your computer with the orange a to a cable
@@ -111,8 +134,8 @@ while(true)
 		motor[BackRight] = vexRT[Ch2];
 
 		//Manipulator Control
-			motor[Manipulator1] = vexRT[Btn5U]*127 + vexRT[Btn5D]*-127;
-			motor[Manipulator2] = vexRT[Btn5U]*127 + vexRT[Btn5D]*-127;
+		motor[Manipulator1] = vexRT[Btn5U]*127 + vexRT[Btn5D]*-63;
+		motor[Manipulator2] = vexRT[Btn5U]*127 + vexRT[Btn5D]*-63;
 
 /*
 Autonomous Steps Needed
@@ -124,11 +147,19 @@ Autonomous Steps Needed
 
 	if(vexRT[Btn8U] == 1){
 		if(vexRT[Btn7U] == 1) {
+			//1. Turns to face Mobile Goal on Parking Location
+			motor[FrontLeft] = -127;
+			motor[BackLeft] = -127;
+			motor[FrontRight] = 127;
+			motor[BackRight] = 127;
+			delay(300);
+			//2. Moves forward to Mobile Goal on Parking Location
 			motor[FrontLeft] = 127;
 			motor[BackLeft] = 127;
 			motor[FrontRight] = 127;
 			motor[BackRight] = 127;
-			wait1Msec(2000);
+			delay(1250);
+			//3. Stops completely
 			motor[FrontLeft] = 0;
 			motor[BackLeft] = 0;
 			motor[FrontRight] = 0;
