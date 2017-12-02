@@ -70,7 +70,6 @@ task autonomous()
 	motor[FrontRight] = 127;
 	motor[BackRight] = 127;
 	delay(300); //GUESTIMATE
-	*/
 	// Lowers Manipulator
 	motor[Manipulator1] = -127;
 	motor[Manipulator2] = -127;
