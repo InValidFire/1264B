@@ -152,14 +152,38 @@ Autonomous Steps Needed
 			motor[BackLeft] = -127;
 			motor[FrontRight] = 127;
 			motor[BackRight] = 127;
-			delay(300);
+			delay(300); //GUESTIMATE
 			//2. Moves forward to Mobile Goal on Parking Location
+			motor[FrontLeft] = 126;
+			motor[BackLeft] = 126;
+			motor[FrontRight] = 126;
+			motor[BackRight] = 126;
+			delay(1250); //GUESTIMATE
+			//3. Picks up Mobile Goal
+			motor[Manipulator1] = 127;
+			motor[Manipulator2] = 127;
+			delay(750); //GUESTIMATE
+			//4. Turns around facing the scoring platform
+			motor[FrontLeft] = 127;
+			motor[BackLeft] = 127;
+			motor[FrontRight] = -127;
+			motor[BackRight] = -127;
+			delay(500); //GUESTIMATE!
+			//5. Moves towards scoring platform
 			motor[FrontLeft] = 127;
 			motor[BackLeft] = 127;
 			motor[FrontRight] = 127;
 			motor[BackRight] = 127;
-			delay(1250);
-			//3. Stops completely
+			delay(1250); //GUESTIMATE
+			//6. Drops Mobile Goal (Part 1) (Lowers Manipulator)
+			motor[Manipulator1] = -127;
+			motor[Manipulator2] = -127;
+			//6.5. Drops Mobile Goal (Part 2) (Backs Up)
+			motor[FrontLeft] = -127;
+			motor[BackLeft] = -127;
+			motor[FrontRight] = -127;
+			motor[BackRight] = -127;
+			//7. Stops completely
 			motor[FrontLeft] = 0;
 			motor[BackLeft] = 0;
 			motor[FrontRight] = 0;
