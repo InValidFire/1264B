@@ -63,13 +63,14 @@ void pre_auton()
 
 task autonomous()
 {
-	/*
+	/* //Not needed because we can face it directly toward Mobile Goal.
 	//1. Turns to face Mobile Goal on Parking Location
 	motor[FrontLeft] = -127;
 	motor[BackLeft] = -127;
 	motor[FrontRight] = 127;
 	motor[BackRight] = 127;
 	delay(300); //GUESTIMATE
+	*/
 	//2. Moves forward to Mobile Goal on Parking Location
 	motor[FrontLeft] = 126;
 	motor[BackLeft] = 126;
@@ -95,17 +96,19 @@ task autonomous()
 	//6. Drops Mobile Goal (Part 1) (Lowers Manipulator)
 	motor[Manipulator1] = -127;
 	motor[Manipulator2] = -127;
+	delay(500);
 	//6.5. Drops Mobile Goal (Part 2) (Backs Up)
 	motor[FrontLeft] = -127;
 	motor[BackLeft] = -127;
 	motor[FrontRight] = -127;
 	motor[BackRight] = -127;
+	delay(750)
 	//7. Stops completely
 	motor[FrontLeft] = 0;
 	motor[BackLeft] = 0;
 	motor[FrontRight] = 0;
 	motor[BackRight] = 0;
-	*/
+
 	}
 
 /*---------------------------------------------------------------------------*/
@@ -145,6 +148,7 @@ Autonomous Steps Needed
 4. Move To Far Scoring Goal
 */
 
+	//Autonomous Test Function
 	if(vexRT[Btn8U] == 1){
 		if(vexRT[Btn7U] == 1) {
 			//1. Turns to face Mobile Goal on Parking Location
@@ -168,7 +172,7 @@ Autonomous Steps Needed
 			motor[BackLeft] = 127;
 			motor[FrontRight] = -127;
 			motor[BackRight] = -127;
-			delay(500); //GUESTIMATE!
+			delay(500); //GUESTIMATE
 			//5. Moves towards scoring platform
 			motor[FrontLeft] = 127;
 			motor[BackLeft] = 127;
@@ -183,6 +187,7 @@ Autonomous Steps Needed
 			motor[BackLeft] = -127;
 			motor[FrontRight] = -127;
 			motor[BackRight] = -127;
+			delay(1500);
 			//7. Stops completely
 			motor[FrontLeft] = 0;
 			motor[BackLeft] = 0;
