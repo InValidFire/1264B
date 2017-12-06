@@ -30,16 +30,25 @@
  * This task should never exit; it should end with some kind of infinite loop, even if empty.
  */
 void operatorControl() {
-	int left; //Declares 'left' variable used for Joystick Definitions.
-	int right; //Declares 'right' variable used for Joystick Definitions.
-	left = joystickGetAnalog(1, 3); //Sets 'left' variable to equal the value of the left joystick.
-	right = joystickGetAnalog(1, 2); //Sets 'right' variable to equal the value of the right joystick.
-	while (1) {
+	bool JSb5u;
+	bool JSb5d;
+	int JSleft; //Declares 'left' variable used for Joystick Definitions.
+	int JSright; //Declares 'right' variable used for Joystick Definitions.
+	JSleft = joystickGetAnalog(1, 3); //Sets 'left' variable to equal the value of the left joystick on channel 3.
+	JSright = joystickGetAnalog(1, 2); //Sets 'right' variable to equal the value of the right joystick on channel 2.
+	JSb5u = joystickGetDigital(1, 5, JOY_UP);
+	JSb5d = joystickGetDigital(1, 5, JOY_DOWN);
+	while (1) { //Beginning of Driver control loop.
+
 		//TANK CONTROLS
-		//Currently don't know how/where to declare my global variables. I tried in 'init.c', but PROS didn't like that idea.
-		motorSet(motorFrontLeft, left); //Tells the motor to be controlled by left joystick.
-		motorSet(motorBackLeft, left); //Tells the motor to be controlled by left joystick.
-		motorSet(motorFrontRight, right); //Tells the motor to be controlled by right joystick.
-		motorSet(motorBackRight, right); //Tells the motor to be controlled by the right joystick.
-	}
+		setDrive(JSleft, JSright); //Tells the left joystick to control left motors, and right joystick to control right motors.
+
+		//MANIPULATOR CONTROLS
+			if (JSb5u == true) {
+			setManipulator(127); //When the upper left bumper is pressed, it will raise the manipulator.
+		}
+		if (JSb5d == true) {
+			setManipulator(-127); //When the lower left bumper is pressed, it will lower the manipulator.
+		}
+	} //End of Driver control loop.
 }

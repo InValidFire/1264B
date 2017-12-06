@@ -37,12 +37,5 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
-  int motorFrontLeft;
-  int motorFrontRight;
-  int motorBackLeft;
-  int motorBackRight;
-  motorFrontLeft = 7;
-  motorFrontRight = 5;
-  motorBackLeft = 2;
-  motorBackRight = 6;
+  setTeamName("1264B"); //Sets our robot name to '1264B'
 }
