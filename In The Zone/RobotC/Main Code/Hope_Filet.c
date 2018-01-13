@@ -100,7 +100,7 @@ task usercontrol()
 		motor[RightSides] = vexRT[Ch2];
 		motor[RightMid] = vexRT[Ch2];
 
-		//Manipulator Control - WIP
+		//----Manipulator Control - WIP--------------------------------------
 
 		//Claw Controls
 		motor[Claw] = vexRT[Btn5U]*127 + vexRT[Btn5D]*-127;

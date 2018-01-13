@@ -70,16 +70,17 @@ task autonomous()
 	motor[FrontRight] = 127;
 	motor[BackRight] = 127;
 	delay(300); //GUESTIMATE
-	// Lowers Manipulator
-	motor[Manipulator1] = -127;
-	motor[Manipulator2] = -127;
-	delay(1000);
 	// Moves forward to Mobile Goal on Parking Location
 	motor[FrontLeft] = 127;
 	motor[BackLeft] = 127;
 	motor[FrontRight] = 127;
 	motor[BackRight] = 127;
 	delay(1350); //GUESTIMATE
+	// Lowers Manipulator
+	motor[Manipulator1] = -127;
+	motor[Manipulator2] = -127;
+	delay(1000);
+	/*
 	// Picks up Mobile Goal
 	motor[Manipulator1] = 127;
 	motor[Manipulator2] = 127;
@@ -117,6 +118,7 @@ task autonomous()
 	motor[BackLeft] = 0;
 	motor[FrontRight] = 0;
 	motor[BackRight] = 0;
+	*/
 	}
 
 /*---------------------------------------------------------------------------*/
