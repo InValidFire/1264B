@@ -61,17 +61,17 @@ void pre_auton()
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-task autonomous()
+task autonomous() //Autonomous summary: Moves forward for 1 second (just made to avoid singing)
 {
-	motor[FrontLeft] = 127;
-	motor[BackLeft] = 127;
-	motor[FrontRight] = 127;
-	motor[BackRight] = 127;
-	delay(1000);
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
+	motor[FrontLeft] = 127; //Tells front left motor to move forward at full power
+	motor[BackLeft] = 127; //Tells back left motor to move forward at full power
+	motor[FrontRight] = 127; //Tells back left motor to move forward at full power
+	motor[BackRight] = 127; //Tells back right motor to move forward at full power
+	delay(1000); //Delays bottom code from running for 1 second (1000ms)
+	motor[FrontLeft] = 0; //Tells front left motor to stop
+	motor[BackLeft] = 0; //Tells back left motor to stop
+	motor[FrontRight] = 0; //Tells front right motor to stop
+	motor[BackRight] = 0; //Tells back right motor to stop
 }
 
 /*---------------------------------------------------------------------------*/
@@ -92,32 +92,43 @@ task usercontrol()
 	//connect the cortex too your computer with the orange a to a cable
   // press f5
   // User control code here, inside the loop
-while(true)
+while(true) //Standard Tank Controls and Manipulator Control
 	{
 		//leftSide
-		motor[FrontLeft] = vexRT[Ch3];
-		motor[BackLeft] = vexRT[Ch3];
+		motor[FrontLeft] = vexRT[Ch3]; //Assigns the Front-Left motor to the left joystick
+		motor[BackLeft] = vexRT[Ch3]; //Assigns the Back-Left motor to the left joystick
 
 		//rightSide
-		motor[FrontRight] = vexRT[Ch2];
-		motor[BackRight] = vexRT[Ch2];
+		motor[FrontRight] = vexRT[Ch2]; //Assigns the Front-Right motor to the right joystick
+		motor[BackRight] = vexRT[Ch2]; //Assigns the Back-Right motor to the right joystick
 
 		//liftControl
 		motor[LeftLiftBottom] = vexRT[Btn6U]*127 + vexRT[Btn6D]*-127;
 		motor[LeftLiftTop] = vexRT[Btn6U]*127 + vexRT[Btn6D]*-127;
 		motor[RightLiftAll] = vexRT[Btn6U]*127 + vexRT[Btn6D]*-127;
+		/* Above code: Tells the LeftLiftBottom, LeftLiftTop, and RightLiftAll to go up
+		 *						 while the upper right bumper is pressed, and down
+		 *						 while the lower right bumper is pressed.
+		 * NOTE: We combined RightLiftBottom and RightLiftTop into one to save space on
+		 *			 the Cortex.
+		 */
+
 
 		//clawControl
 		if(vexRT[Btn8D] == 1) {
-			motor[ClawControl] = 127;
+			motor[ClawControl] = 127; //Tells the claw to open when the 8D button is pressed
 		}
 		if(vexRT[Btn8R] == 1) {
-			motor[ClawControl] = -127;
+			motor[ClawControl] = -127; //Tells the claw to close when the 8R button is pressed
 		}
 
 		//clawLift
 			motor[LeftSecond] = vexRT[Btn5U]*127 + vexRT[Btn5D]*-127;
 			motor[RightSecond] = vexRT[Btn5U]*127 + vexRT[Btn5D]*-127;
+		/* Above code: Raises the lift higher while upper left bumper is
+		 * 						 pressed, and lowers when the lower left bumper is
+		 *						 pressed.
+		 */
 
 /*
 Autonomous Steps Needed
@@ -127,8 +138,8 @@ Autonomous Steps Needed
 4. Move To Far Scoring Goal
 */
 
-	if(vexRT[Btn8U] == 1){
-		if(vexRT[Btn7U] == 1) {
+	if(vexRT[Btn8U] == 1){ 		//Testing grounds for autonomous development
+		if(vexRT[Btn7U] == 1) { //Only active when 8U and 7U are pressed simultaneously
 			motor[FrontLeft] = 127;
 			motor[BackLeft] = 127;
 			motor[FrontRight] = 127;
