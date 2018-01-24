@@ -64,96 +64,139 @@ void pre_auton()
 task autonomous()
 {
 	// Lowers Manipulator
-	motor[Manipulator1] = -127;
-	motor[Manipulator2] = -127;
-	delay(1000);
-	// Stops all motion for 1/10th of a second
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
-	motor[Manipulator1] = 0;
-	motor[Manipulator2] = 0;
-	delay(100);
+	motor[Manipulator1] = -127; //Tells Left manipulator motor to lower
+	motor[Manipulator2] = -127; //Tells Right manipulator motor to lower
+	delay(1000); //Waits to continue for 1s
+
+	//------------------//
+
+	// Stops everything
+	motor[FrontLeft] = 0; //Tells FrontLeft motor to stop
+	motor[BackLeft] = 0; //Tells BackLeft motor to stop
+	motor[FrontRight] = 0; //Tells FrontRight motor to stop
+	motor[BackRight] = 0; //Tells BackRight motor to stop
+	motor[Manipulator1] = 0; //Tells Left Manipulator motor to stop
+	motor[Manipulator2] = 0; //Tells Right Manipulator motor to stop
+	delay(100); //Waits to continue for 0.1s
+
+	//------------------//
+
 	// Moves forward to Mobile Goal on Parking Location
-	motor[FrontLeft] = 127;
-	motor[BackLeft] = 127;
-	motor[FrontRight] = 127;
-	motor[BackRight] = 127;
-	delay(1350); //GUESTIMATE
-	// Stops all motion for 1/10th of a second
+	motor[FrontLeft] = 127; //Tells FrontLeft motor to go full power
+	motor[BackLeft] = 127; //Tells BackLeft motor to go full power
+	motor[FrontRight] = 127; //Tells FrontRight motor to go full power
+	motor[BackRight] = 127; //Tells BackRight motor to go full power
+	delay(1350); //Waits to continue for 1.35s
+
+	//------------------//
+
+	//Stops everything
 	motor[FrontLeft] = 0;
 	motor[BackLeft] = 0;
 	motor[FrontRight] = 0;
 	motor[BackRight] = 0;
 	motor[Manipulator1] = 0;
 	motor[Manipulator2] = 0;
-	delay(100);
+	delay(100); //Waits to continue for 0.1s
+
+	//------------------//
+
 	// Picks up Mobile Goal
-	motor[Manipulator1] = 127;
+	motor[Manipulator1] = 127; //Tells Left and Right Manipulator to lift
 	motor[Manipulator2] = 127;
-	delay(1500); //GUESTIMATE
-	// Stops all motion for 1/10th of a second
+	delay(1500); //Waits to continue for 1.5s
+
+	//------------------//
+
+	//Stops everything
 	motor[FrontLeft] = 0;
 	motor[BackLeft] = 0;
 	motor[FrontRight] = 0;
 	motor[BackRight] = 0;
 	motor[Manipulator1] = 0;
 	motor[Manipulator2] = 0;
-	delay(100);
+	delay(100); //Waits to continue for 0.1s
+
+	//------------------//
+
 	// Turns around facing the scoring platform
-	motor[FrontLeft] = 127;
-	motor[BackLeft] = 127;
+	motor[FrontLeft] = 127; //Does a pivot turn to face towards scoring platform
+	motor[BackLeft] = 127;	//Left goes forward while Right goes in reverse, spinning on a point
 	motor[FrontRight] = -127;
 	motor[BackRight] = -127;
-	delay(1250); //GUESTIMATE!
-		// Stops all motion for 1/10th of a second
+	delay(1250); //Waits to continue for 1.25s
+
+	//------------------//
+
+	//Stops everything
 	motor[FrontLeft] = 0;
 	motor[BackLeft] = 0;
 	motor[FrontRight] = 0;
 	motor[BackRight] = 0;
 	motor[Manipulator1] = 0;
 	motor[Manipulator2] = 0;
-	delay(100);
+	delay(100); //Waits to continue for 0.1s
+
+	//------------------//
+
 	// Moves towards scoring platform
-	motor[FrontLeft] = 127;
+	motor[FrontLeft] = 127; //Tells all drive train motors to go full power forward
 	motor[BackLeft] = 127;
 	motor[FrontRight] = 127;
 	motor[BackRight] = 127;
-	delay(1350); //GUESTIMATE
-		// Stops all motion for 1/10th of a second
+	delay(1350); //Waits to continue for 1.35s
+
+	//------------------//
+
+	//Stops all motion
 	motor[FrontLeft] = 0;
 	motor[BackLeft] = 0;
 	motor[FrontRight] = 0;
 	motor[BackRight] = 0;
 	motor[Manipulator1] = 0;
 	motor[Manipulator2] = 0;
-	delay(100);
+	delay(100); //Waits to continue for 0.1s
+
+	//------------------//
+
 	// Drops Mobile Goal (Part 1) (Lowers Manipulator)
-	motor[Manipulator1] = -127;
+	motor[Manipulator1] = -127; //Tells both manipulator motors to lower
 	motor[Manipulator2] = -127;
-	delay(500);
-		// Stops all motion for 1/10th of a second
+	delay(500); //Waits to continue for 0.5s
+
+	//------------------//
+
+	//Stops everything
 	motor[FrontLeft] = 0;
 	motor[BackLeft] = 0;
 	motor[FrontRight] = 0;
 	motor[BackRight] = 0;
 	motor[Manipulator1] = 0;
 	motor[Manipulator2] = 0;
-	delay(100);
+	delay(100); //Waits to continue for 0.1s
+
+	//------------------//
+
 	// Drops Mobile Goal (Part 2) (Backs Up)
-	motor[FrontLeft] = -127;
+	motor[FrontLeft] = -127; //Tells all drive train motors to go full power reverse
 	motor[BackLeft] = -127;
 	motor[FrontRight] = -127;
 	motor[BackRight] = -127;
-	delay(750);
+	delay(750); //Waits to continue for 0.75s
+
+	//------------------//
+
 	// Stops completely
-	motor[FrontLeft] = 0;
+	motor[FrontLeft] = 0; //Stops everything
 	motor[BackLeft] = 0;
 	motor[FrontRight] = 0;
 	motor[BackRight] = 0;
 	motor[Manipulator1] = 0;
 	motor[Manipulator2] = 0;
+	/* Reasoning for stopping between movements, our Robot, we believe, was not told to stop
+	 * certain motions in the beginning, so it ran them throughout the program, which threw
+	 * the rest of the code off.
+	 */
 	}
 
 /*---------------------------------------------------------------------------*/
@@ -174,17 +217,19 @@ task usercontrol()
 while(true)
 	{
 		//leftSide
-		motor[FrontLeft] = vexRT[Ch3];
-		motor[BackLeft] = vexRT[Ch3];
+		motor[FrontLeft] = vexRT[Ch3]; //Assigns the FrontLeft motor to the left joystick
+		motor[BackLeft] = vexRT[Ch3]; //Assigns the BackLeft motor to the left joystick
 
 		//rightSide
-		motor[FrontRight] = vexRT[Ch2];
-		motor[BackRight] = vexRT[Ch2];
+		motor[FrontRight] = vexRT[Ch2]; //Assigns the FrontRight motor to the right joystick
+		motor[BackRight] = vexRT[Ch2]; //Assigns the BackRight motor to the right joystick
 
 		//Manipulator Control
 		motor[Manipulator1] = vexRT[Btn5U]*127 + vexRT[Btn5D]*-63;
 		motor[Manipulator2] = vexRT[Btn5U]*127 + vexRT[Btn5D]*-63;
-
+		/* Above code: Tells Manip1 and Manip2 to raise while the upper left
+		 * bumper is pressed, and lower while lower left bummper is pressed
+		 */
 /*
 Autonomous Steps Needed
 1. Drive to loading zone
@@ -192,115 +237,114 @@ Autonomous Steps Needed
 3. Load Mobile Goal
 4. Move To Far Scoring Goal
 */
-	//Autonomous Test Function
+	//Autonomous Test Function (Changes as time moves on)
 	if(vexRT[Btn8U] == 1){
 		if(vexRT[Btn7U] == 1) {
-				//Not needed because we can face it directly toward Mobile Goal.
-	// Turns to face Mobile Goal on Parking Location
-	motor[FrontLeft] = -127;
-	motor[BackLeft] = -127;
-	motor[FrontRight] = 127;
-	motor[BackRight] = 127;
-	delay(300); //GUESTIMATE
-		// Stops all motion for 1/10th of a second
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
-	motor[Manipulator1] = 0;
-	motor[Manipulator2] = 0;
-	delay(100);
-	// Moves forward to Mobile Goal on Parking Location
-	motor[FrontLeft] = 127;
-	motor[BackLeft] = 127;
-	motor[FrontRight] = 127;
-	motor[BackRight] = 127;
-	delay(1350); //GUESTIMATE
-		// Stops all motion for 1/10th of a second
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
-	motor[Manipulator1] = 0;
-	motor[Manipulator2] = 0;
-	delay(100);
-	// Lowers Manipulator
-	motor[Manipulator1] = -127;
-	motor[Manipulator2] = -127;
-	delay(1000);
-		// Stops all motion for 1/10th of a second
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
-	motor[Manipulator1] = 0;
-	motor[Manipulator2] = 0;
-	delay(100);
-	// Picks up Mobile Goal
-	motor[Manipulator1] = 127;
-	motor[Manipulator2] = 127;
-	delay(1500); //GUESTIMATE
-	// Stops all motion for 1/10th of a second
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
-	motor[Manipulator1] = 0;
-	motor[Manipulator2] = 0;
-	delay(100);
-	// Turns around facing the scoring platform
-	motor[FrontLeft] = 127;
-	motor[BackLeft] = 127;
-	motor[FrontRight] = -127;
-	motor[BackRight] = -127;
-	delay(1250); //GUESTIMATE!
-		// Stops all motion for 1/10th of a second
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
-	motor[Manipulator1] = 0;
-	motor[Manipulator2] = 0;
-	delay(100);
-	// Moves towards scoring platform
-	motor[FrontLeft] = 127;
-	motor[BackLeft] = 127;
-	motor[FrontRight] = 127;
-	motor[BackRight] = 127;
-	delay(1350); //GUESTIMATE
-		// Stops all motion for 1/10th of a second
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
-	motor[Manipulator1] = 0;
-	motor[Manipulator2] = 0;
-	delay(100);
-	// Drops Mobile Goal (Part 1) (Lowers Manipulator)
-	motor[Manipulator1] = -127;
-	motor[Manipulator2] = -127;
-	delay(500);
-		// Stops all motion for 1/10th of a second
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
-	motor[Manipulator1] = 0;
-	motor[Manipulator2] = 0;
-	delay(100);
-	// Drops Mobile Goal (Part 2) (Backs Up)
-	motor[FrontLeft] = -127;
-	motor[BackLeft] = -127;
-	motor[FrontRight] = -127;
-	motor[BackRight] = -127;
-	delay(750);
-	// Stops completely
-	motor[FrontLeft] = 0;
-	motor[BackLeft] = 0;
-	motor[FrontRight] = 0;
-	motor[BackRight] = 0;
-	motor[Manipulator1] = 0;
-	motor[Manipulator2] = 0;
+			// Turns to face Mobile Goal on Parking Location
+			motor[FrontLeft] = -127;
+			motor[BackLeft] = -127;
+			motor[FrontRight] = 127;
+			motor[BackRight] = 127;
+			delay(300); //GUESTIMATE
+			// Stops all motion for 1/10th of a second
+			motor[FrontLeft] = 0;
+			motor[BackLeft] = 0;
+			motor[FrontRight] = 0;
+			motor[BackRight] = 0;
+			motor[Manipulator1] = 0;
+			motor[Manipulator2] = 0;
+			delay(100);
+			// Moves forward to Mobile Goal on Parking Location
+			motor[FrontLeft] = 127;
+			motor[BackLeft] = 127;
+			motor[FrontRight] = 127;
+			motor[BackRight] = 127;
+			delay(1350); //GUESTIMATE
+			// Stops all motion for 1/10th of a second
+			motor[FrontLeft] = 0;
+			motor[BackLeft] = 0;
+			motor[FrontRight] = 0;
+			motor[BackRight] = 0;
+			motor[Manipulator1] = 0;
+			motor[Manipulator2] = 0;
+			delay(100);
+			// Lowers Manipulator
+			motor[Manipulator1] = -127;
+			motor[Manipulator2] = -127;
+			delay(1000);
+			// Stops all motion for 1/10th of a second
+			motor[FrontLeft] = 0;
+			motor[BackLeft] = 0;
+			motor[FrontRight] = 0;
+			motor[BackRight] = 0;
+			motor[Manipulator1] = 0;
+			motor[Manipulator2] = 0;
+			delay(100);
+			// Picks up Mobile Goal
+			motor[Manipulator1] = 127;
+			motor[Manipulator2] = 127;
+			delay(1500); //GUESTIMATE
+			// Stops all motion for 1/10th of a second
+			motor[FrontLeft] = 0;
+			motor[BackLeft] = 0;
+			motor[FrontRight] = 0;
+			motor[BackRight] = 0;
+			motor[Manipulator1] = 0;
+			motor[Manipulator2] = 0;
+			delay(100);
+			// Turns around facing the scoring platform
+			motor[FrontLeft] = 127;
+			motor[BackLeft] = 127;
+			motor[FrontRight] = -127;
+			motor[BackRight] = -127;
+			delay(1250); //GUESTIMATE!
+			// Stops all motion for 1/10th of a second
+			motor[FrontLeft] = 0;
+			motor[BackLeft] = 0;
+			motor[FrontRight] = 0;
+			motor[BackRight] = 0;
+			motor[Manipulator1] = 0;
+			motor[Manipulator2] = 0;
+			delay(100);
+			// Moves towards scoring platform
+			motor[FrontLeft] = 127;
+			motor[BackLeft] = 127;
+			motor[FrontRight] = 127;
+			motor[BackRight] = 127;
+			delay(1350); //GUESTIMATE
+			// Stops all motion for 1/10th of a second
+			motor[FrontLeft] = 0;
+			motor[BackLeft] = 0;
+			motor[FrontRight] = 0;
+			motor[BackRight] = 0;
+			motor[Manipulator1] = 0;
+			motor[Manipulator2] = 0;
+			delay(100);
+			// Drops Mobile Goal (Part 1) (Lowers Manipulator)
+			motor[Manipulator1] = -127;
+			motor[Manipulator2] = -127;
+			delay(500);
+			// Stops all motion for 1/10th of a second
+			motor[FrontLeft] = 0;
+			motor[BackLeft] = 0;
+			motor[FrontRight] = 0;
+			motor[BackRight] = 0;
+			motor[Manipulator1] = 0;
+			motor[Manipulator2] = 0;
+			delay(100);
+			// Drops Mobile Goal (Part 2) (Backs Up)
+			motor[FrontLeft] = -127;
+			motor[BackLeft] = -127;
+			motor[FrontRight] = -127;
+			motor[BackRight] = -127;
+			delay(750);
+			// Stops completely
+			motor[FrontLeft] = 0;
+			motor[BackLeft] = 0;
+			motor[FrontRight] = 0;
+			motor[BackRight] = 0;
+			motor[Manipulator1] = 0;
+			motor[Manipulator2] = 0;
 			}
 		}
 	}
