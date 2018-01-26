@@ -2,6 +2,7 @@
 #pragma config(Motor,  port3,           LeftMid,       tmotorVex393HighSpeed_MC29, openLoop, reversed, driveLeft)
 #pragma config(Motor,  port4,           RightSides,    tmotorVex393HighSpeed_MC29, openLoop, reversed, driveRight)
 #pragma config(Motor,  port5,           RightMid,      tmotorVex393HighSpeed_MC29, openLoop, driveRight)
+#pragma config(Motor,  port6,           Tower1,        tmotorVex393_MC29, openLoop, driveLeft)
 #pragma config(Motor,  port7,           Tower2,        tmotorVex393_MC29, openLoop, reversed, driveRight)
 #pragma config(Motor,  port8,           Claw,          tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           MobileGoal,    tmotorVex393_MC29, openLoop)
