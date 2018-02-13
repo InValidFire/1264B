@@ -62,27 +62,27 @@ void pre_auton()
 int autover;
 task autonomous()
 {
-	if(autover == 1) {
-		motor[LeftFront] = 127;
-		motor[LeftMid] = 127;
-		motor[LeftBack] = 127;
-		motor[RightFront] = 127;
-		motor[RightMid] = 127;
-		motor[RightBack] = 127;
-		delay(2000);
-	}
-	//Simple test function for autonomous until actual code can be created
+	// Moves forward to Mobile Goal on Parking Location
+	motor[LeftFront] = 127;
+	motor[LeftMid] = 127;
+	motor[LeftBack] = 127;
+	motor[RightFront] = 127;
+	motor[RightMid] = 127;
+	motor[RightBack] = 127;
+	delay(1350); //Waits to continue for 1.35s
 
-	if(autover == 2) {
-		motor[LeftFront] = 127;
-		motor[LeftMid] = 127;
-		motor[LeftBack] = 127;
-		motor[RightFront] = 127;
-		motor[RightMid] = -127;
-		motor[RightBack] = -127;
-		delay(2000);
-	}
-	//Testing autonomous selection
+	//------------------//
+
+	//Stops everything
+	motor[LeftFront] = 0;
+	motor[LeftMid] = 0;
+	motor[LeftBack] = 0;
+	motor[RightFront] = 0;
+	motor[RightMid] = 0;
+	motor[RightBack] = 0;
+	delay(100); //Waits to continue for 0.1s
+
+	//Testing autonomous selection variable is autover
 }
 
 /*---------------------------------------------------------------------------*/
@@ -124,23 +124,44 @@ task usercontrol()
 		//---- Manipulator Control - WIP --------------------------------------//
 
 		//Claw Controls
-		motor[Claw] = vexRT[Btn8D]*127 + vexRT[Btn8R]*-127; //Right (8) side claw control
+		motor[Claw] = vexRT[Btn8R]*127 + vexRT[Btn8D]*-127; //Right (8) side claw control
 
 		//Tower Control
 		motor[LeftTower] = vexRT[Btn6U]*127 + vexRT[Btn6D]*-127; //Tower Control using right bumpers
 		motor[RightTower] = vexRT[Btn6U]*127 + vexRT[Btn6D]*-127;
 
 		//Mobile Goal Pickup
-		motor[Mobile] = vexRT[Btn5D]*-127 + vexRT[Btn5U]*127; //Pickup control using left bumpers
+		motor[Mobile] = vexRT[Btn5U]*-127 + vexRT[Btn5D]*127; //Pickup control using left bumpers. Up goes out, down goes in.
 
 		//---- Autonomous Test Function ---------------------------------------//
 		if(vexRT[Btn8U] == 1) { //If both buttons 8U and 7U are pressed simultaneously, run the autonomous() task
 			if(vexRT[Btn7U] == 1) {
-				startTask(autonomous); //Could possibly shut us out of usercontrol(), would require reboot
+				// Moves forward to Mobile Goal on Parking Location
+				motor[LeftFront] = 127;
+				motor[LeftMid] = 127;
+				motor[LeftBack] = 127;
+				motor[RightFront] = 127;
+				motor[RightMid] = 127;
+				motor[RightBack] = 127;
+				delay(1350); //Waits to continue for 1.35s
+
+				//------------------//
+
+				//Stops everything
+				motor[LeftFront] = 0;
+				motor[LeftMid] = 0;
+				motor[LeftBack] = 0;
+				motor[RightFront] = 0;
+				motor[RightMid] = 0;
+				motor[RightBack] = 0;
+				delay(100); //Waits to continue for 0.1s
+
+				//Testing autonomous selection variable is autover
 			}
 		}
 
 		//---- LCD Display Test -----------------------------------------------//
+		autover = 1;
 		float batlevel = nAvgBatteryLevel/1000;
 		//Sets batlevel to the battery level
 
