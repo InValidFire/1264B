@@ -62,25 +62,50 @@ void pre_auton()
 int autover;
 task autonomous()
 {
-	// Moves forward to Mobile Goal on Parking Location
-	motor[LeftFront] = 127;
-	motor[LeftMid] = 127;
-	motor[LeftBack] = 127;
-	motor[RightFront] = 127;
-	motor[RightMid] = 127;
-	motor[RightBack] = 127;
-	delay(1000); //Waits to continue for 1.35s
+				//Extend Tower
+				motor[LeftTower] = 100;
+				motor[RightTower] = 100;
+				wait1Msec(500);
+				motor[LeftTower] = 0;
+				motor[RightTower] = 0;
+				//------------------//
 
-	//------------------//
+				//Extend Mobile Goal Pickup
+				motor[Mobile] = -127;
+				wait1Msec(700);
+				motor[Mobile] = 0;
+				//-----------------//
 
-	//Stops everything
-	motor[LeftFront] = 0;
-	motor[LeftMid] = 0;
-	motor[LeftBack] = 0;
-	motor[RightFront] = 0;
-	motor[RightMid] = 0;
-	motor[RightBack] = 0;
-	delay(100); //Waits to continue for 0.1s
+				//Moves forward to Mobile Goal on Parking Location
+				motor[LeftFront] = 127;
+				motor[LeftMid] = 127;
+				motor[LeftBack] = 127;
+				motor[RightFront] = 77; //73
+				motor[RightMid] = 77;
+				motor[RightBack] = 77;
+				wait1Msec(2850); //Waits to continue for 1.35s
+				motor[LeftFront] = 0;
+				motor[LeftMid] = 0;
+				motor[LeftBack] = 0;
+				motor[RightFront] = 0;
+				motor[RightMid] = 0;
+				motor[RightBack] = 0;
+				//------------------//
+
+				//Retracts Mobile Goal Pickup
+
+				motor[Mobile] = 127;
+				wait1Msec(700);
+				motor[Mobile] = 0;
+				//-----------------//
+
+				//Retract Tower
+				motor[LeftTower] = -100;
+				motor[RightTower] = -100;
+				wait1Msec(1250);
+				motor[LeftTower] = 0;
+				motor[RightTower] = 0;
+				//---------------//
 
 	//Testing autonomous selection variable is autover
 }
@@ -98,7 +123,7 @@ task autonomous()
 task usercontrol()
 {
   //Plans for this bot:
-	//	- LCD Display, will require convincing of Nick
+	//	- LCD Display, needs further testing, start with basic battery voltage display.
 	//	- Quad Encoders, will require further testing before implementation
 
   while (true)
@@ -111,52 +136,147 @@ task usercontrol()
   	 * LeftMid & RightMid Reversed due to build configuration.
   	 */
 
-		//Left side
-		motor[LeftFront] = vexRT[Ch3]; //Assigns Left Front motor to left joystick
-		motor[LeftMid] = vexRT[Ch3]; //Assigns Left Mid motor to left joystick
-		motor[LeftBack] = vexRT[Ch3]; //Assigns Left Back motor to left joystick
+			//Left side - Normal Speed
+			motor[LeftFront] = vexRT[Ch3]; //Assigns Left Front motor to left joystick
+			motor[LeftMid] = vexRT[Ch3]; //Assigns Left Mid motor to left joystick
+			motor[LeftBack] = vexRT[Ch3]; //Assigns Left Back motor to left joystick
 
-		//Right Side
-		motor[RightFront] = vexRT[Ch2]; //Assigns Right Front motor to right joystick
-		motor[RightMid] = vexRT[Ch2]; //Assigns Right Mid motor to right joystick
-		motor[RightBack] = vexRT[Ch2]; //Assigns Right Back motor to right joystick
+			//Right Side - Normal Speed
+			motor[RightFront] = vexRT[Ch2]; //Assigns Right Front motor to right joystick
+			motor[RightMid] = vexRT[Ch2]; //Assigns Right Mid motor to right joystick
+			motor[RightBack] = vexRT[Ch2]; //Assigns Right Back motor to right joystick
 
-		//---- Manipulator Control - WIP --------------------------------------//
+			//---- Manipulator Control - WIP --------------------------------------//
 
-		//Claw Controls
-		motor[Claw] = vexRT[Btn8R]*127 + vexRT[Btn8D]*-127; //Right (8) side claw control
+			//Claw Controls
+			motor[Claw] = vexRT[Btn8R]*127 + vexRT[Btn8D]*-127; //Right (8) side claw control
 
-		//Tower Control
-		motor[LeftTower] = vexRT[Btn6U]*127 + vexRT[Btn6D]*-127; //Tower Control using right bumpers
-		motor[RightTower] = vexRT[Btn6U]*127 + vexRT[Btn6D]*-127;
+			//Tower Control
+			motor[LeftTower] = vexRT[Btn6U]*127 + vexRT[Btn6D]*-127; //Tower Control using right bumpers
+			motor[RightTower] = vexRT[Btn6U]*127 + vexRT[Btn6D]*-127;
 
-		//Mobile Goal Pickup
-		motor[Mobile] = vexRT[Btn5U]*-127 + vexRT[Btn5D]*127; //Pickup control using left bumpers. Up goes out, down goes in.
+			//Mobile Goal Pickup
+			motor[Mobile] = vexRT[Btn5U]*-127 + vexRT[Btn5D]*127; //Pickup control using left bumpers. Up goes out, down goes in.
 
-		//---- Autonomous Test Function ---------------------------------------//
-		if(vexRT[Btn8U] == 1) { //If both buttons 8U and 7U are pressed simultaneously, run the autonomous() task
-			if(vexRT[Btn7U] == 1) {
-				// Moves forward to Mobile Goal on Parking Location
-				motor[LeftFront] = 127;
-				motor[LeftMid] = 127;
-				motor[LeftBack] = 127;
-				motor[RightFront] = 73;
-				motor[RightMid] = 73;
-				motor[RightBack] = 73;
-				delay(2700); //Waits to continue for 1.35s
+			//---- Autonomous Test Function ---------------------------------------//
+			if(vexRT[Btn8U] == 1) { //If both buttons 8U and 7U are pressed simultaneously, run the autonomous() task
+				if(vexRT[Btn7U] == 1) {
 
-				//------------------//
+					//Extend Tower
+					motor[LeftTower] = 100;
+					motor[RightTower] = 100;
+					wait1Msec(500);
+					motor[LeftTower] = 0;
+					motor[RightTower] = 0;
+					//------------------//
 
-				//Stops everything
-				motor[LeftFront] = 0;
-				motor[LeftMid] = 0;
-				motor[LeftBack] = 0;
-				motor[RightFront] = 0;
-				motor[RightMid] = 0;
-				motor[RightBack] = 0;
-				delay(100); //Waits to continue for 0.1s
+					//Extend Mobile Goal Pickup
+					motor[Mobile] = -127;
+					wait1Msec(700);
+					motor[Mobile] = 0;
+					//-----------------//
 
-				//Testing autonomous selection variable is autover
+					// Moves forward to Mobile Goal on Parking Location
+					motor[LeftFront] = 127;
+					motor[LeftMid] = 127;
+					motor[LeftBack] = 127;
+					motor[RightFront] = 77; //73
+					motor[RightMid] = 77;
+					motor[RightBack] = 77;
+					wait1Msec(2850); //Waits to continue for 1.35s
+					motor[LeftFront] = 0;
+					motor[LeftMid] = 0;
+					motor[LeftBack] = 0;
+					motor[RightFront] = 0;
+					motor[RightMid] = 0;
+					motor[RightBack] = 0;
+					//------------------//
+
+					//Retracts Mobile Goal Pickup
+
+					motor[Mobile] = 127;
+					wait1Msec(700);
+					motor[Mobile] = 0;
+					//-----------------//
+
+					//Retract Tower
+					motor[LeftTower] = -100;
+					motor[RightTower] = -100;
+					wait1Msec(1250);
+					motor[LeftTower] = 0;
+					motor[RightTower] = 0;
+					//---------------//
+
+					//Turns Around
+					motor[LeftFront] = 127;
+					motor[LeftMid] = 127;
+					motor[LeftBack] = 127;
+					motor[RightFront] = -77;
+					motor[RightMid] = -77;
+					motor[RightBack] = -77;
+					wait1Msec(1250);
+					motor[LeftFront] = 0;
+					motor[LeftMid] = 0;
+					motor[LeftBack] = 0;
+					motor[RightFront] = 0;
+					motor[RightMid] = 0;
+					motor[RightBack] = 0;
+					//-----------------//
+
+					//Moves to Start
+					motor[LeftFront] = 127;
+					motor[LeftMid] = 127;
+					motor[LeftBack] = 127;
+					motor[RightFront] = 77;
+					motor[RightMid] = 77;
+					motor[RightBack] = 77;
+					wait1Msec(2850);
+					motor[LeftFront] = 0;
+					motor[LeftMid] = 0;
+					motor[LeftBack] = 0;
+					motor[RightFront] = 0;
+					motor[RightMid] = 0;
+					motor[RightBack] = 0;
+					//----------------//
+
+					//Extend Tower
+					motor[LeftTower] = 100;
+					motor[RightTower] = 100;
+					wait1Msec(1250);
+					motor[LeftTower] = 0;
+					motor[RightTower] = 0;
+					//------------------//
+
+					//Extend Mobile Goal Pickup
+					motor[Mobile] = -127;
+					wait1Msec(700);
+					motor[Mobile] = 0;
+
+					//Moves In Reverse
+					motor[LeftFront] = -127;
+					motor[LeftMid] = -127;
+					motor[LeftBack] = -127;
+					motor[RightFront] = -77;
+					motor[RightMid] = -77;
+					motor[RightBack] = -77;
+					wait1Msec(500);
+					motor[LeftFront] = 0;
+					motor[LeftMid] = 0;
+					motor[LeftBack] = 0;
+					motor[RightFront] = 0;
+					motor[RightMid] = 0;
+					motor[RightBack] = 0;
+					//------------------//
+
+					//Retract Tower
+					motor[LeftTower] = -100;
+					motor[RightTower] = -100;
+					wait1Msec(500);
+					motor[LeftTower] = 0;
+					motor[RightTower] = 0;
+					//---------------//
+
+					//Testing autonomous selection variable is autover
 			}
 		}
 
@@ -182,12 +302,12 @@ task usercontrol()
 
 		if(btnPressed == 1) { //If the left button is pressed, scroll left on autonomous versions
 			autover = autover - 1;
-			delay(200); //Buffer for time
+			wait1Msec(200); //Buffer for time
 		}
 
 		if(btnPressed == 4) { //If the right button is pressed, scroll right on autonomous versions
 			autover = autover + 1;
-			delay(200); //Buffer for time
+			wait1Msec(200); //Buffer for time
 		}
 
   }
