@@ -182,21 +182,21 @@ task usercontrol()
 			motor[LeftBack] = vexRT[Ch3]; //Assigns Left Back motor to left joystick
 
 			//Right Side Speed Modifications due to inbalance of motor speed on Drivetrain.
-			if(vexRT[Ch2]>79) { //While the Joystick is greater than 77, max motor speed is 77.
-				motor[RightFront] = 79;
-				motor[RightMid] = 79;
-				motor[RightBack] = 79;
+			if(vexRT[Ch2]>75) { //While the Joystick is greater than 77, max motor speed is 77.
+				motor[RightFront] = 75;
+				motor[RightMid] = 75;
+				motor[RightBack] = 75;
 			}
-			if(vexRT[Ch2]<-79) { //While Joystick is lower than -77, minimum motor speed is -77.
-				motor[RightFront] = -79;
-				motor[RightMid] = -79;
-				motor[RightBack] = -79;
+			if(vexRT[Ch2]<-75) { //While Joystick is lower than -77, minimum motor speed is -77.
+				motor[RightFront] = -75;
+				motor[RightMid] = -75;
+				motor[RightBack] = -75;
 			}
-			else { //Otherwise, inbetween these values of -77 and 77, equal the value of the Joystick.
+			if(vexRT[Ch2] < 75 && vexRT[Ch2] > -75) { //Instead of Else statements, which conflict with code, using an if statement for the normal control setup.
 				motor[RightFront] = vexRT[Ch2];
 				motor[RightMid] = vexRT[Ch2];
 				motor[RightBack] = vexRT[Ch2];
-			}
+		}
 			//---- Manipulator Control - WIP --------------------------------------//
 
 			//Claw Controls
@@ -210,21 +210,20 @@ task usercontrol()
 			motor[Mobile] = vexRT[Btn5U]*-127 + vexRT[Btn5D]*127; //Pickup control using left bumpers. Up goes out, down goes in.
 
 			//Testing a Toggle Switch for Mobile Goal Pickup.
-			while(vexRT[Btn7U] == 1 && vexRT[Btn8U] == 0) {
-				mgp = mgp*-1;
-				waitUntil(vexRT[Btn7U] == 0);
-			}
 
 			//Pressed once, it lowers, pressed again, it raises... Hopefully this works.
 			if(mgp == 1 && vexRT[Btn7U] == 1 && vexRT[Btn8U] == 0) { // Extra conditions ensure only happens if the button is pressed.
 				motor[Mobile] = 127;
 				wait1Msec(700);
 				motor[Mobile] = 0;
+				mgp = -1;
 			}
+
 			if(mgp == -1 && vexRT[Btn7U] == 1 && vexRT[Btn8U] == 0) {
 				motor[Mobile] = -127;
 				wait1Msec(700);
 				motor[Mobile] = 0;
+				mgp = 1;
 			}
 			//---- Autonomous Test Function ---------------------------------------//
 			if(vexRT[Btn8U] == 1) { //If both buttons 8U and 7U are pressed simultaneously, run the autonomous() task
