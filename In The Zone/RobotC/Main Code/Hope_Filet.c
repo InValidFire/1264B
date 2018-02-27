@@ -62,97 +62,97 @@ void pre_auton()
 int autover = 1;
 task autonomous()
 {
-					//Extend Mobile Goal Pickup
-					motor[Mobile] = -127;
-					wait1Msec(700);
-					motor[Mobile] = 0;
-					//-----------------//
+//Extend Mobile Goal Pickup
+motor[Mobile] = -127;
+wait1Msec(700);
+motor[Mobile] = 0;
+//-----------------//
 
-					// Moves forward to Mobile Goal on Parking Location
-					motor[LeftFront] = 127;
-					motor[LeftMid] = 127;
-					motor[LeftBack] = 127;
-					motor[RightFront] = 77; //73
-					motor[RightMid] = 77;
-					motor[RightBack] = 77;
-					wait1Msec(3100); //Waits to continue for 1.35s
-					motor[LeftFront] = 0;
-					motor[LeftMid] = 0;
-					motor[LeftBack] = 0;
-					motor[RightFront] = 0;
-					motor[RightMid] = 0;
-					motor[RightBack] = 0;
-					//------------------//
+// Moves forward to Mobile Goal on Parking Location
+motor[LeftFront] = 127;
+motor[LeftMid] = 127;
+motor[LeftBack] = 127;
+motor[RightFront] = 77; //73
+motor[RightMid] = 77;
+motor[RightBack] = 77;
+wait1Msec(3100); //Waits to continue for 1.35s
+motor[LeftFront] = 0;
+motor[LeftMid] = 0;
+motor[LeftBack] = 0;
+motor[RightFront] = 0;
+motor[RightMid] = 0;
+motor[RightBack] = 0;
+//------------------//
 
-					//Retracts Mobile Goal Pickup
+//Retracts Mobile Goal Pickup
 
-					motor[Mobile] = 127;
-					wait1Msec(700);
-					motor[Mobile] = 0;
-					//-----------------//
+motor[Mobile] = 127;
+wait1Msec(700);
+motor[Mobile] = 0;
+//-----------------//
 
-					//Moves to Start
-					motor[LeftFront] = -127;
-					motor[LeftMid] = -127;
-					motor[LeftBack] = -127;
-					motor[RightFront] = -77;
-					motor[RightMid] = -77;
-					motor[RightBack] = -77;
-					wait1Msec(3000);
-					motor[LeftFront] = 0;
-					motor[LeftMid] = 0;
-					motor[LeftBack] = 0;
-					motor[RightFront] = 0;
-					motor[RightMid] = 0;
-					motor[RightBack] = 0;
-					//----------------//
+//Moves to Start
+motor[LeftFront] = -127;
+motor[LeftMid] = -127;
+motor[LeftBack] = -127;
+motor[RightFront] = -77;
+motor[RightMid] = -77;
+motor[RightBack] = -77;
+wait1Msec(3000);
+motor[LeftFront] = 0;
+motor[LeftMid] = 0;
+motor[LeftBack] = 0;
+motor[RightFront] = 0;
+motor[RightMid] = 0;
+motor[RightBack] = 0;
+//----------------//
 
-					//Turns Around
-					motor[LeftFront] = 127;
-					motor[LeftMid] = 127;
-					motor[LeftBack] = 127;
-					motor[RightFront] = -77;
-					motor[RightMid] = -77;
-					motor[RightBack] = -77;
-					wait1Msec(1550);
-					motor[LeftFront] = 0;
-					motor[LeftMid] = 0;
-					motor[LeftBack] = 0;
-					motor[RightFront] = 0;
-					motor[RightMid] = 0;
-					motor[RightBack] = 0;
-					//-----------------//
+//Turns Around
+motor[LeftFront] = 127;
+motor[LeftMid] = 127;
+motor[LeftBack] = 127;
+motor[RightFront] = -77;
+motor[RightMid] = -77;
+motor[RightBack] = -77;
+wait1Msec(1550);
+motor[LeftFront] = 0;
+motor[LeftMid] = 0;
+motor[LeftBack] = 0;
+motor[RightFront] = 0;
+motor[RightMid] = 0;
+motor[RightBack] = 0;
+//-----------------//
 
-					//Makes Left Side Allign with 10pt bar
-					motor[LeftFront] = 127;
-					motor[LeftMid] = 127;
-					motor[LeftBack] = 127;
-					wait1Msec(800);
-					motor[LeftFront] = 0;
-					motor[LeftMid] = 0;
-					motor[LeftBack] = 0;
-					//--------------------//
+//Makes Left Side Allign with 10pt bar
+motor[LeftFront] = 127;
+motor[LeftMid] = 127;
+motor[LeftBack] = 127;
+wait1Msec(800);
+motor[LeftFront] = 0;
+motor[LeftMid] = 0;
+motor[LeftBack] = 0;
+//--------------------//
 
-					//Extend Mobile Goal Pickup
-					motor[Mobile] = -127;
-					wait1Msec(700);
-					motor[Mobile] = 0;
+//Extend Mobile Goal Pickup
+motor[Mobile] = -127;
+wait1Msec(700);
+motor[Mobile] = 0;
 
-					//Moves In Reverse
-					motor[LeftFront] = -127;
-					motor[LeftMid] = -127;
-					motor[LeftBack] = -127;
-					motor[RightFront] = -77;
-					motor[RightMid] = -77;
-					motor[RightBack] = -77;
-					wait1Msec(500);
-					motor[LeftFront] = 0;
-					motor[LeftMid] = 0;
-					motor[LeftBack] = 0;
-					motor[RightFront] = 0;
-					motor[RightMid] = 0;
-					motor[RightBack] = 0;
-					//------------------//
+//Moves In Reverse
+motor[LeftFront] = -127;
+motor[LeftMid] = -127;
+motor[LeftBack] = -127;
+motor[RightFront] = -77;
+motor[RightMid] = -77;
+motor[RightBack] = -77;
+wait1Msec(500);
+motor[LeftFront] = 0;
+motor[LeftMid] = 0;
+motor[LeftBack] = 0;
+motor[RightFront] = 0;
+motor[RightMid] = 0;
+motor[RightBack] = 0;
+//------------------//
 }
 
 /*---------------------------------------------------------------------------*/
