@@ -128,7 +128,7 @@ task autonomous()
 					motor[LeftFront] = 127;
 					motor[LeftMid] = 127;
 					motor[LeftBack] = 127;
-					wait1Msec(900);
+					wait1Msec(600);
 					motor[LeftFront] = 0;
 					motor[LeftMid] = 0;
 					motor[LeftBack] = 0;
@@ -141,7 +141,7 @@ task autonomous()
 					motor[RightFront] = 77;
 					motor[RightMid] = 77;
 					motor[RightBack] = 77;
-					wait1Msec(50);
+					wait1Msec(200);
 					motor[LeftFront] = 0;
 					motor[LeftMid] = 0;
 					motor[LeftBack] = 0;
