@@ -23,7 +23,7 @@
    7. Turn right facing starting tiles.
    8. Move to tile 1, 3 (Tile with a straight path to parking platform)
    9. Turn left facing parking platform.
-   10. Move to parking spot.
+   10. Move to parking platform.
    11. End.
 
 #### 2. Flipside Ops:
@@ -33,7 +33,7 @@
   1. Turn right facing the south wall of field.
   2. Move to tile 1, 1 (Southwest corner tile)
   3. Turn left facing blue cap.
-  4. Move to tile 1, 3 (Tile with blue cap)
+  4. Move to tile 3, 1 (Tile with blue cap)
   5. Flip Cap. (If Parking Jumper is not active, end here)
   6. Back up to point of straight path with parking platform.
   7. Turn left facing parking platform.
