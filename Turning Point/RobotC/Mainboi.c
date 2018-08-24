@@ -22,21 +22,21 @@
 // ---------- Functions ---------- //
 //function cap is 256, do not exceed this limit
 
-void move_pivot_turn(int time, int power) {
-	motor[LeftFront] = leftpower;
-	motor[LeftBack] = leftpower;
-	motor[RightFront] = rightpower*-1;
-	motor[RightBack] = rightpower*-1;
+void move_pivot_turn(int time, int power) { //Positive power number turns left, negative turns right
+	motor[LeftFront] = power;
+	motor[LeftBack] = power;
+	motor[RightFront] = power*-1;
+	motor[RightBack] = power*-1;
 	wait1Msec(time);
 }
-void move_swing_turn(int time, int leftpower, int rightpower) {
+void move_swing_turn(int time, int leftpower, int rightpower) { //Allows for swing turns by setting one value higher than the other
 	motor[LeftFront] = leftpower;
 	motor[LeftBack] = leftpower;
 	motor[RightFront] = rightpower;
 	motor[RightBack] = rightpower;
 	wait1Msec(time);
 }
-void move_straight(int time, int power) {
+void move_straight(int time, int power) { //Simple function for moving. Positive for forward, negative for reverse
 	motor[LeftFront] = power;
 	motor[LeftBack] = power;
 	motor[RightFront] = power;
