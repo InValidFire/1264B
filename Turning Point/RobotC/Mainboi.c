@@ -19,6 +19,24 @@
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 
+// ---------- Functions ---------- //
+//function cap is 256, do not exceed this limit
+
+void pivot_turn(int time, int leftpower, int rightpower) {
+	motor[LeftFront] = leftpower;
+	motor[LeftBack] = leftpower;
+	motor[RightFront] = rightpower*-1;
+	motor[RightBack] = rightpower*-1;
+	wait1Msec(time);
+}
+void swing_turn(int time, int leftpower, int rightpower) {
+	motor[LeftFront] = leftpower;
+	motor[LeftBack] = leftpower;
+	motor[RightFront] = rightpower;
+	motor[RightBack] = rightpower;
+}
+// ------------------------------- //
+
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
