@@ -22,19 +22,27 @@
 // ---------- Functions ---------- //
 //function cap is 256, do not exceed this limit
 
-void pivot_turn(int time, int leftpower, int rightpower) {
+void move_pivot_turn(int time, int power) {
 	motor[LeftFront] = leftpower;
 	motor[LeftBack] = leftpower;
 	motor[RightFront] = rightpower*-1;
 	motor[RightBack] = rightpower*-1;
 	wait1Msec(time);
 }
-void swing_turn(int time, int leftpower, int rightpower) {
+void move_swing_turn(int time, int leftpower, int rightpower) {
 	motor[LeftFront] = leftpower;
 	motor[LeftBack] = leftpower;
 	motor[RightFront] = rightpower;
 	motor[RightBack] = rightpower;
+	wait1Msec(time);
 }
+void move_straight(int time, int power) {
+	motor[LeftFront] = power;
+	motor[LeftBack] = power;
+	motor[RightFront] = power;
+	motor[RightBack] = power;
+	wait1Msec(time);
+}	
 // ------------------------------- //
 
 /*---------------------------------------------------------------------------*/
