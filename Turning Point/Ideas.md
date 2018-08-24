@@ -6,10 +6,25 @@
   * Have the last jumper determine if we are going to attempt parking.
     * Reasoning: Allied Robot may also attempt parking in their autonomous, making ours toggleable would prevent damages during autonomous period.
   * Allows us to have 4 different autonomi plans 'saved'.
-* Encoders to use for more accurate autonomi code.
+* Use Motor Encoders to use for more accurate autonomi code.
 * Run the manipulator and drive train on two seperate batteries, keeping dedicated power for each.
-
-## Possible Autonomi:
+* We will need 8 different variations of Autonomi code:
+ * At least one of three variables will change for each autonomous version:
+   * What team we're on.
+   * What tile we're on.
+   * Whether or not we're going to park.
+* Autonomous variations (Tile, Team, Parking):
+  * 0,0,0 = Flag Ops Autonomous, Red Team, Parking
+  * 0,0,1 = Flag Ops Autonomous, Red Team, No parking
+  * 0,1,0 = Flag Ops Autonomous, Blue Team, Parking
+  * 0,1,1 = Flag Ops Autonomous, Blue Team, No Parking
+  * 1,0,0 = Flipside Ops Autonomous, Red Team, Parking
+  * 1,0,1 = Flipside Ops Autonomous, Red Team, No Parking
+  * 1,1,0 = Flipside Ops Autonomous, Blue Team, Parking
+  * 1,1,1 = Flipside Ops Autonomous, Blue Team, No Parking
+  
+  
+## Possible Autonomi Ideas:
 #### 1. Flag Ops:
 * Conditions
  * Start from Tile 1, 4 (Red Tile closest to Flagpost)
