@@ -10,7 +10,7 @@
 * Run the manipulator and drive train on two seperate batteries, keeping dedicated power for each.
 
 ## Possible Autonomi:
-1. Flag Ops:
+#### 1. Flag Ops:
 * Conditions
  * Start from Tile 1, 4 (Red Tile closest to Flagpost)
  * Steps:
@@ -26,7 +26,7 @@
    10. Move to parking spot.
    11. End.
 
-2. Flipside Ops:
+#### 2. Flipside Ops:
 * Conditions:
   * Start from Tile 1, 2 (Red tile furthest from Flagpost)
 * Steps:
