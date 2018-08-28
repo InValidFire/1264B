@@ -5,26 +5,22 @@
   * Have the other pin determine team color. (In means Red, out means Blue)
   * Have the last jumper determine if we are going to attempt parking.
     * Reasoning: Allied Robot may also attempt parking in their autonomous, making ours toggleable would prevent damages during autonomous period.
-  * Allows us to have 4 different autonomi plans 'saved'.
+  * Allows us to have 8 different autonomi plans 'saved'.
+  * Autonomous variations (Tile, Team, Parking):
+   * 0,0,0 = Flag Ops Autonomous, Red Team, Parking
+   * 0,0,1 = Flag Ops Autonomous, Red Team, No parking
+   * 0,1,0 = Flag Ops Autonomous, Blue Team, Parking
+   * 0,1,1 = Flag Ops Autonomous, Blue Team, No Parking
+   * 1,0,0 = Flipside Ops Autonomous, Red Team, Parking
+   * 1,0,1 = Flipside Ops Autonomous, Red Team, No Parking
+   * 1,1,0 = Flipside Ops Autonomous, Blue Team, Parking
+   * 1,1,1 = Flipside Ops Autonomous, Blue Team, No Parking
 * Use Motor Encoders to use for more accurate autonomi code.
 * Run the manipulator (claw thingy) and drive train (wheels) on two seperate batteries, keeping dedicated power for each.
-* We will need 8 different variations of Autonomi code:
- * At least one of three variables will change for each autonomous version:
-   * What team we're on.
-   * What tile we're on.
-   * Whether or not we're going to park.
-* Autonomous variations (Tile, Team, Parking):
-  * 0,0,0 = Flag Ops Autonomous, Red Team, Parking
-  * 0,0,1 = Flag Ops Autonomous, Red Team, No parking
-  * 0,1,0 = Flag Ops Autonomous, Blue Team, Parking
-  * 0,1,1 = Flag Ops Autonomous, Blue Team, No Parking
-  * 1,0,0 = Flipside Ops Autonomous, Red Team, Parking
-  * 1,0,1 = Flipside Ops Autonomous, Red Team, No Parking
-  * 1,1,0 = Flipside Ops Autonomous, Blue Team, Parking
-  * 1,1,1 = Flipside Ops Autonomous, Blue Team, No Parking
 
 * A function that makes the bot rotate vigorously left and right in an attempt to make dislodging it from the platform more difficult
   * possible end function of autonomi if on platform
+  * probably a button that you can press after reaching the top platform
   
 ## Possible Autonomi Ideas:
 #### 1. Flag Ops:
