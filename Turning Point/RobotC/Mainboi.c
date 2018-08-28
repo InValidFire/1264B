@@ -22,7 +22,7 @@
 // ---------- Functions ---------- //
 //function cap is 256, do not exceed this limit
 
-void move_pivot_turn(int time, int power) { //Positive power number turns left, negative turns right
+void move_pivot_turn(int time, int power) { //Positive power number turns left, negative turns right ---> 90 degree turn
 	motor[LeftFront] = power;
 	motor[LeftBack] = power;
 	motor[RightFront] = power*-1;
