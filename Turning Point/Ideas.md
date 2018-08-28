@@ -7,7 +7,7 @@
     * Reasoning: Allied Robot may also attempt parking in their autonomous, making ours toggleable would prevent damages during autonomous period.
   * Allows us to have 4 different autonomi plans 'saved'.
 * Use Motor Encoders to use for more accurate autonomi code.
-* Run the manipulator and drive train on two seperate batteries, keeping dedicated power for each.
+* Run the manipulator (claw thingy) and drive train (wheels) on two seperate batteries, keeping dedicated power for each.
 * We will need 8 different variations of Autonomi code:
  * At least one of three variables will change for each autonomous version:
    * What team we're on.
@@ -22,7 +22,9 @@
   * 1,0,1 = Flipside Ops Autonomous, Red Team, No Parking
   * 1,1,0 = Flipside Ops Autonomous, Blue Team, Parking
   * 1,1,1 = Flipside Ops Autonomous, Blue Team, No Parking
-  
+
+* A function that makes the bot rotate vigorously left and right in an attempt to make dislodging it from the platform more difficult
+  * possible end function of autonomi if on platform
   
 ## Possible Autonomi Ideas:
 #### 1. Flag Ops:
