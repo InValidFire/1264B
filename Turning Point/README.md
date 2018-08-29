@@ -1,1 +1,4 @@
 The VEX competition of the 2018-2019 year is called Turning Point. Using Caps, Balls, and Flags the robot is to score more points than the opposing team. This is the repository of code for team 1264A of Dunwoody High School.
+
+Notes:
+- Batteries are to be kept at ~8V Charge for Autonomous consistency.
