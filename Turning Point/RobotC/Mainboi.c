@@ -147,13 +147,13 @@ task usercontrol()
    	motor[RightBack] = vexRT[Ch2]; //Right Back to right joystick
 
    	//Tower controls
-  	if(vexRT[Btn6U] == 1) {
-   		motor[Tower1Left] = 127;
+  	if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
+   		motor[Tower1Left] = 127; //Left and right is left and right when tower is in front perspective.
    		motor[Tower1Right] = 127;
    		motor[Tower1Left] = 127;
    		motor[Tower1Right] = 127;
    	}
-   	if(vexRT[Btn5U] == 1) {
+   	if(vexRT[Btn5U] == 1) { //Tower two controls (right from front)
    		motor[Tower1Left] = -127;
    		motor[Tower1Right] = -127;
    		motor[Tower1Left] = -127;
