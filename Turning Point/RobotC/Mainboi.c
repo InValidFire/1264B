@@ -1,6 +1,6 @@
-#pragma config(Sensor, dgtl2,  JumperTile,     sensorDigitalIn)
-#pragma config(Sensor, dgtl3,  JumperTeam,     sensorDigitalIn)
-#pragma config(Sensor, dgtl4,  JumperPark,     sensorDigitalIn)
+#pragma config(Sensor, dgtl1,  JumperTile,     sensorDigitalIn)
+#pragma config(Sensor, dgtl2,  JumperTeam,     sensorDigitalIn)
+#pragma config(Sensor, dgtl3,  JumperPark,     sensorDigitalIn)
 #pragma config(Motor,  port1,           ArmRight,      tmotorVex393_HBridge, openLoop, driveRight)
 #pragma config(Motor,  port2,           LeftBack,      tmotorVex393_MC29, openLoop, reversed, driveLeft)
 #pragma config(Motor,  port3,           RightBack,     tmotorVex393_MC29, openLoop, driveRight)
@@ -31,7 +31,7 @@
 // ---------- Functions ---------- //
 //function cap is 256, do not exceed this limit
 
-void move_pivot_turn(int time, int power) { //Positive power number turns left, negative turns right ---> 90 degree turn
+void move_pivot_turn(int time, int power) { //Right Turn in place (positive power number turns left, negative turns right) ---> 90 degree turn
 	motor[LeftFront] = power;
 	motor[LeftBack] = power;
 	motor[RightFront] = power*-1;
@@ -42,7 +42,7 @@ void move_pivot_turn(int time, int power) { //Positive power number turns left, 
 	motor[RightFront] = 0;
 	motor[RightBack] = 0;
 }
-void move_swing_turn(int time, int leftpower, int rightpower) { //Allows for swing turns by setting one value higher than the other
+void move_swing_turn(int time, int leftpower, int rightpower) { //Adjustable Angle Turns (allows for swing turns by setting one value higher than the other)
 	motor[LeftFront] = leftpower;
 	motor[LeftBack] = leftpower;
 	motor[RightFront] = rightpower;
@@ -53,7 +53,7 @@ void move_swing_turn(int time, int leftpower, int rightpower) { //Allows for swi
 	motor[RightFront] = 0;
 	motor[RightBack] = 0;
 }
-void move_straight(int time, int power) { //Simple function for moving. Positive for forward, negative for reverse
+void move_straight(int time, int power) { //Move straight (positive for forward, negative for reverse)
 	motor[LeftFront] = power;
 	motor[LeftBack] = power;
 	motor[RightFront] = power;
@@ -64,7 +64,7 @@ void move_straight(int time, int power) { //Simple function for moving. Positive
 	motor[RightFront] = 0;
 	motor[RightBack] = 0;
 }
-void manipulator_tower(int time, int power) {
+void manipulator_tower(int time, int power) { //Raise/Lower Arm Tower
 	motor[FLeftTower] = power;
 	motor[BLeftTower] = power;
 	motor[BRightTower] = power;
@@ -75,14 +75,14 @@ void manipulator_tower(int time, int power) {
 	motor[BRightTower] = 0;
 	motor[FRightTower] = 0;
 }
-void manipulator_arm(int time, int power) {
+void manipulator_arm(int time, int power) { //Raise/Lower Arm
 	motor[ArmLeft] = power;
 	motor[ArmRight] = power;
 	wait1Msec(time);
 	motor[ArmLeft] = 0;
 	motor[ArmRight] = 0;
 }
-void dab (int time, int power) {
+void dab (int time, int power) { //
 	move_pivot_turn(1000, 127);
 	move_swing_turn(1000, -127, 127);
 }
@@ -127,23 +127,26 @@ void pre_auton()
 task autonomous()
 {
 	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == false) { //Flag Ops Autonomous, Red Team, Parking
-		manipulator_arm(1,127);
-		dab(100,127);
+		manipulator_arm(1000,127);
+		manipulator_arm(1000,-127);
 	}
 	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == true) { //Flag Ops Autonomous, Red Team, No parking
-		move_straight(1,127); //placeholder until 'real' code is made.
+		move_pivot_turn(1000,127);//Turn Right
+		move_straight(1000,127); //Go to middle of next tile
+		move_pivot_turn(1000,-127);//Turn Left
+		move_straight(2000,127);//Go to middle platform
 	}
 	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == true && SensorValue[JumperPark] == false) { //Flag Ops Autonomous, Blue Team, Parking
-		move_straight(1,127); //placeholder until 'real' code is made.
+		move_straight(1000,127); //placeholder until 'real' code is made.
 	}
 	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == true && SensorValue[JumperPark] == true) { //Flag Ops Autonomous, Blue Team, No Parking
-		move_straight(1,127); //placeholder until 'real' code is made.
+		move_straight(1000,127); //placeholder until 'real' code is made.
 	}
 	if(SensorValue[JumperTile] == true && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == false) { //Flipside Ops Autonomous, Red Team, Parking
-		move_straight(1,127); //placeholder until 'real' code is made.
+		move_straight(1000,127); //placeholder until 'real' code is made.
 	}
 	if(SensorValue[JumperTile] == true && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == true) { //Flipside Ops Autonomous, Red Team, No Parking
-		move_straight(1,127); //placeholder until 'real' code is made.
+		move_straight(1000,127); //placeholder until 'real' code is made.
 	}
 	if(SensorValue[JumperTile] == true && SensorValue[JumperTeam] == true && SensorValue[JumperPark] == false) { //Flipside Ops Autonomous, Blue Team, Parking
 		move_straight(1,127); //placeholder until 'real' code is made.
@@ -192,17 +195,16 @@ task usercontrol()
 			motor[BRightTower] = 0;
 			motor[FRightTower] = 0;
 		}
-	}
-
-	//Arm controls
-	if(vexRT[Btn5U] == 1) {
-		motor[ArmLeft] = 90;
-		motor[ArmRight] = 90;
+		//Arm controls
+		if(vexRT[Btn5U] == 1) {
+			motor[ArmLeft] = 120;
+			motor[ArmRight] = 120;
 		} else if(vexRT[Btn5D] == 1) {//Flippy bois
-		motor[ArmLeft] = -90;
-		motor[ArmRight] = -90;
+			motor[ArmLeft] = -120;
+			motor[ArmRight] = -120;
 		}	else{ //Stop arms if nothing is pressed
-		motor[ArmLeft] = 0;
-		motor[ArmRight] = 0;
+			motor[ArmLeft] = 0;
+			motor[ArmRight] = 0;
+	  }
 	}
 }
