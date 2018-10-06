@@ -52,3 +52,6 @@
   7. Turn left facing parking platform.
   8. Move to parking platform.
   9. End.
+  
+  #### 3. Parking Ops:
+  - Go to parking spot via corners. /shrug
