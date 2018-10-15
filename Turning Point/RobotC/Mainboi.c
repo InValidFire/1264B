@@ -194,17 +194,17 @@ task usercontrol()
 			motor[BLeftTower] = 0;
 			motor[BRightTower] = 0;
 			motor[FRightTower] = 0;
-		}
-		//Arm controls
-		if(vexRT[Btn5U] == 1) {
-			motor[ArmLeft] = 120;
-			motor[ArmRight] = 120;
-		} else if(vexRT[Btn5D] == 1) {//Flippy bois
-			motor[ArmLeft] = -120;
-			motor[ArmRight] = -120;
-		}	else{ //Stop arms if nothing is pressed
-			motor[ArmLeft] = 0;
-			motor[ArmRight] = 0;
-	  }
+			}
+			//Arm controls
+			if(vexRT[Btn5U] == 1) {
+				motor[ArmLeft] = 120;
+				motor[ArmRight] = 120;
+			} else if(vexRT[Btn5D] == 1) {//Flippy bois
+				motor[ArmLeft] = -120;
+				motor[ArmRight] = -120;
+			}	else{ //Stop arms if nothing is pressed
+				motor[ArmLeft] = 0;
+				motor[ArmRight] = 0;
+	  		}
 	}
 }
