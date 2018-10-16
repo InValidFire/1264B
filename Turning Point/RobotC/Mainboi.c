@@ -127,8 +127,7 @@ void pre_auton()
 task autonomous()
 {
 	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == false) { //Flag Ops Autonomous, Red Team, Parking
-		manipulator_arm(1000,127);
-		manipulator_arm(1000,-127);
+		//Nothing here for time being. League and Tucker to deal with first.
 	}
 	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == true) { //Flag Ops Autonomous, Red Team, No parking
 		move_pivot_turn(1000,127);//Turn Right
@@ -179,7 +178,7 @@ task usercontrol()
 		motor[RightBack] = vexRT[Ch2]; //Right Back to right joystick
 
 		//Tower controls
-		if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
+		/*if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
 			motor[FLeftTower] = 127; //Left and right is left and right when tower is in front perspective.
 			motor[BLeftTower] = 127;
 			motor[BRightTower] = 127;
@@ -205,6 +204,6 @@ task usercontrol()
 			}	else{ //Stop arms if nothing is pressed
 				motor[ArmLeft] = 0;
 				motor[ArmRight] = 0;
-	  		}
+	  		}*/
 	}
 }
