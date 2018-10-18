@@ -1,6 +1,10 @@
 #pragma config(Sensor, dgtl1,  JumperTile,     sensorDigitalIn)
 #pragma config(Sensor, dgtl2,  JumperTeam,     sensorDigitalIn)
 #pragma config(Sensor, dgtl3,  JumperPark,     sensorDigitalIn)
+#pragma config(Sensor, dgtl9,  LedRed,         sensorLEDtoVCC)
+#pragma config(Sensor, dgtl10, LedYel,         sensorLEDtoVCC)
+#pragma config(Sensor, dgtl11, LedGreen,       sensorLEDtoVCC)
+#pragma config(Sensor, dgtl12, LedFull,        sensorLEDtoVCC)
 #pragma config(Motor,  port1,           ArmRight,      tmotorVex393_HBridge, openLoop, driveRight)
 #pragma config(Motor,  port2,           LeftBack,      tmotorVex393_MC29, openLoop, reversed, driveLeft)
 #pragma config(Motor,  port3,           RightBack,     tmotorVex393_MC29, openLoop, driveRight)
@@ -126,36 +130,44 @@ void pre_auton()
 
 task autonomous()
 {
-	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == false) { //Flag Ops Autonomous, Red Team, Parking
-		//Nothing here for time being. League and Tucker to deal with first.
-	}
-	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == true) { //Flag Ops Autonomous, Red Team, No parking
-		move_pivot_turn(1000,127);//Turn Right
-		move_straight(1000,127); //Go to middle of next tile
-		move_pivot_turn(1000,-127);//Turn Left
-		move_straight(2000,127);//Go to middle platform
-	}
-	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == true && SensorValue[JumperPark] == false) { //Flag Ops Autonomous, Blue Team, Parking
-		move_straight(1000,127); //placeholder until 'real' code is made.
-	}
-	if(SensorValue[JumperTile] == false && SensorValue[JumperTeam] == true && SensorValue[JumperPark] == true) { //Flag Ops Autonomous, Blue Team, No Parking
-		move_straight(1000,127); //placeholder until 'real' code is made.
-	}
-	if(SensorValue[JumperTile] == true && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == false) { //Flipside Ops Autonomous, Red Team, Parking
-		move_straight(1000,127); //placeholder until 'real' code is made.
-	}
-	if(SensorValue[JumperTile] == true && SensorValue[JumperTeam] == false && SensorValue[JumperPark] == true) { //Flipside Ops Autonomous, Red Team, No Parking
-		move_straight(1000,127); //placeholder until 'real' code is made.
-	}
-	if(SensorValue[JumperTile] == true && SensorValue[JumperTeam] == true && SensorValue[JumperPark] == false) { //Flipside Ops Autonomous, Blue Team, Parking
-		move_straight(1,127); //placeholder until 'real' code is made.
-	}
-	if(SensorValue[JumperTile] == true && SensorValue[JumperTeam] == true && SensorValue[JumperPark] == true) { //Flipside Ops Autonomous, Blue Team, No Parking
-		move_straight(1,127); //placeholder until 'real' code is made.
-	}
-	else {
-		move_straight(1000,127);
-	}
+	move_straight(1000,127);
+	//if(SensorValue[JumperTile] == 0 && SensorValue[JumperTeam] == 0 && SensorValue[JumperPark] == 0) { //Flag Tile (FT), Red Team, Tile Parking
+		//move_pivot_turn(1000,-127);//Turn Left
+		//move_straight(2000,127); //Go forward 2 tiles
+		//move_pivot_turn(2000,127);//Turn 180 Degress Right (Turn Around)
+		//move_straight(2000,127); //Go forward 2 tiles
+	//}
+	//if(SensorValue[JumperTile] == 0 && SensorValue[JumperTeam] == 0 && SensorValue[JumperPark] == 1) { //FT, Blue Team, Tile
+	//	move_pivot_turn(1000,127);//Turn Right
+	//	move_straight(2000,127); //Go forward 2 tiles
+	//	move_pivot_turn(2000,-127);//Turn 180 Degress Left (Turn Around)
+	//	move_straight(2000,127); //Go forward 2 tiles
+	//}
+	//if(SensorValue[JumperTile] == 0 && SensorValue[JumperTeam] == 1 && SensorValue[JumperPark] == 0) { //FT, Red Team, Platform Parking
+	//	manipulator_arm(1000,127);//Move arm up
+	//	manipulator_arm(1000,-127);//and back down
+	//}
+	//if(SensorValue[JumperTile] == 0 && SensorValue[JumperTeam] == 1 && SensorValue[JumperPark] == 1) { //FT, Blue Team, Platform
+	//	move_pivot_turn(1000,127);//Turn Right
+	//	move_straight(1000,127); //Go to middle of next tile
+	//	move_pivot_turn(1000,-127);//Turn Left
+	//	move_straight(2000,127);//Go to middle platform
+	//}
+	//if(SensorValue[JumperTile] == 1 && SensorValue[JumperTeam] == 0 && SensorValue[JumperPark] == 0) { //Opposite Tile (OT), Red Team, Tile
+	//	move_straight(1000,127); //placeholder until 'real' code is made.
+	//}
+	//if(SensorValue[JumperTile] == 1 && SensorValue[JumperTeam] == 0 && SensorValue[JumperPark] == 1) { //OT, Red Team, Tile
+	//	move_straight(1000,127); //placeholder until 'real' code is made.
+	//}
+	//if(SensorValue[JumperTile] == 1 && SensorValue[JumperTeam] == 1 && SensorValue[JumperPark] == 0) { //OT, Blue Team, Platform
+	//	move_straight(1,127); //placeholder until 'real' code is made.
+	//}
+	//if(SensorValue[JumperTile] == 1 && SensorValue[JumperTeam] == 1 && SensorValue[JumperPark] == 1) { //OT, Blue Team, Platform
+	//	move_straight(1,127); //placeholder until 'real' code is made.
+	//}
+	//else {
+	//	move_straight(1000,127);
+	//}
 }
 
 /*---------------------------------------------------------------------------*/
@@ -172,13 +184,13 @@ task usercontrol()
 {
 	while (true)
 	{
-		motor[LeftFront] = vexRT[Ch3]; //Left Front motor to left joystick
-		motor[LeftBack] = vexRT[Ch3]; //Left Back motor to left joystick
-		motor[RightFront] = vexRT[Ch2]; //Right Front to right joystick
-		motor[RightBack] = vexRT[Ch2]; //Right Back to right joystick
+		motor[RightFront] = vexRT[Ch3]; //Left Front motor to left joystick
+		motor[RightBack] = vexRT[Ch3]; //Left Back motor to left joystick
+		motor[LeftFront] = vexRT[Ch2]; //Right Front to right joystick
+		motor[LeftBack] = vexRT[Ch2]; //Right Back to right joystick
 
 		//Tower controls
-		/*if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
+		if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
 			motor[FLeftTower] = 127; //Left and right is left and right when tower is in front perspective.
 			motor[BLeftTower] = 127;
 			motor[BRightTower] = 127;
@@ -193,17 +205,40 @@ task usercontrol()
 			motor[BLeftTower] = 0;
 			motor[BRightTower] = 0;
 			motor[FRightTower] = 0;
-			}
-			//Arm controls
-			if(vexRT[Btn5U] == 1) {
-				motor[ArmLeft] = 120;
-				motor[ArmRight] = 120;
-			} else if(vexRT[Btn5D] == 1) {//Flippy bois
-				motor[ArmLeft] = -120;
-				motor[ArmRight] = -120;
-			}	else{ //Stop arms if nothing is pressed
-				motor[ArmLeft] = 0;
-				motor[ArmRight] = 0;
-	  		}*/
+		}
+		//Arm controls
+		if(vexRT[Btn5U] == 1) {
+			motor[ArmLeft] = 120;
+			motor[ArmRight] = 120;
+		} else if(vexRT[Btn5D] == 1) {//Flippy bois
+			motor[ArmLeft] = -120;
+			motor[ArmRight] = -120;
+		}	else{ //Stop arms if nothing is pressed
+			motor[ArmLeft] = 0;
+			motor[ArmRight] = 0;
+	  }
+
+	  //Battery Lights
+	  if(nImmediateBatteryLevel/1000>=8.5) {
+	  	SensorValue[LedFull]=1;
+	  	SensorValue[LedGreen]=1;
+	  	SensorValue[LedRed]=0;
+	  	SensorValue[LedYel]=0;
+	  } else if(nImmediateBatteryLevel/1000>=8.0){
+	  	SensorValue[LedFull]=0;
+	  	SensorValue[LedGreen]=1;
+	  	SensorValue[LedRed]=0;
+	  	SensorValue[LedYel]=0;
+	  } else if(nImmediateBatteryLevel/1000>=7.8){
+	  	SensorValue[LedFull]=0;
+	  	SensorValue[LedGreen]=0;
+	  	SensorValue[LedRed]=0;
+	  	SensorValue[LedYel]=1;
+	  } else if(nImmediateBatteryLevel/1000>=7.5){
+	  	SensorValue[LedFull]=0;
+	  	SensorValue[LedGreen]=0;
+	  	SensorValue[LedRed]=1;
+	  	SensorValue[LedYel]=0;
+	  }
 	}
 }
