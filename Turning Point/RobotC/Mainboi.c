@@ -130,13 +130,13 @@ void pre_auton()
 
 task autonomous()
 {
-	move_straight(1000,127);
+	//move_straight(1000,127);
 	//if(SensorValue[JumperTile] == 0 && SensorValue[JumperTeam] == 0 && SensorValue[JumperPark] == 0) { //Flag Tile (FT), Red Team, Tile Parking
-		//move_pivot_turn(1000,-127);//Turn Left
-		//move_straight(2000,127); //Go forward 2 tiles
-		//move_pivot_turn(2000,127);//Turn 180 Degress Right (Turn Around)
-		//move_straight(2000,127); //Go forward 2 tiles
-	//}
+		move_pivot_turn(1000,-127);//Turn Left
+		move_straight(2000,127); //Go forward 2 tiles
+		move_pivot_turn(2000,127);//Turn 180 Degress Right (Turn Around)
+		move_straight(2000,127); //Go forward 2 tiles
+	}
 	//if(SensorValue[JumperTile] == 0 && SensorValue[JumperTeam] == 0 && SensorValue[JumperPark] == 1) { //FT, Blue Team, Tile
 	//	move_pivot_turn(1000,127);//Turn Right
 	//	move_straight(2000,127); //Go forward 2 tiles
@@ -168,7 +168,7 @@ task autonomous()
 	//else {
 	//	move_straight(1000,127);
 	//}
-}
+//}
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -208,11 +208,11 @@ task usercontrol()
 		}
 		//Arm controls
 		if(vexRT[Btn5U] == 1) {
-			motor[ArmLeft] = 120;
-			motor[ArmRight] = 120;
+			motor[ArmLeft] = 60;
+			motor[ArmRight] = 60;
 		} else if(vexRT[Btn5D] == 1) {//Flippy bois
-			motor[ArmLeft] = -120;
-			motor[ArmRight] = -120;
+			motor[ArmLeft] = -60;
+			motor[ArmRight] = -60;
 		}	else{ //Stop arms if nothing is pressed
 			motor[ArmLeft] = 0;
 			motor[ArmRight] = 0;
