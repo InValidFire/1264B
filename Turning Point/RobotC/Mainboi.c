@@ -98,23 +98,18 @@ void dab(int time, int power) {
 	move_pivot_turn(time, -power);
 	move_swing_turn(time, power, power*-1);
 }
-void stop_all() {
-	motor[ArmLeft] = 0;
-	motor[ArmRight] = 0;
-	motor[BLeftTower] = 0;
-	motor[BRightTower] = 0;
-	motor[FLeftTower] = 0;
-	motor[FRightTower] = 0;
-	motor[LeftBack] = 0;
-	motor[LeftFront] = 0;
-	motor[RightBack] = 0;
-	motor[RightFront] = 0;
-}
 int autostart; //Whether or not autonomous has begun.
 int auto=0; //Determines selected autonomous
+int autoselect;
 int automin = 0; //Minimum value for autonomous scrolling
 int automax = 8; //Maximum value for autonomous scrolling
-int powerlevel;
+int powerlevelCortex;
+int powerlevelExpander;
+// Power Level
+// Full = 1
+// Good = 2
+// OK   = 3
+// Bad  = 4
 // ------------------------------- //
 
 /*---------------------------------------------------------------------------*/
@@ -126,7 +121,7 @@ int powerlevel;
 /*  function is only called once after the cortex has been powered on and    */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
-task autoselectled() //LOOK HERE
+task autoled() //LOOK HERE
 {
 	while(true) {
 		if(vexRT[Btn8U]==1) { //Every time this button is pressed, increase 'auto' variable by 1.
@@ -135,9 +130,6 @@ task autoselectled() //LOOK HERE
 		}
 		if(auto>automax) { //Keeps 'auto' variable within range.
 			auto=automin;
-		}
-		if(autostart==1) {
-			stopTask(autoselectled);
 		}
 		if(auto==0) {
 			while(auto==0) {
@@ -224,7 +216,7 @@ task lcd { //For LCD Autonomous Selection
 	int rightbutton = 4;
 	while(true) {
 		if(nLCDButtons==leftbutton) { //Scrolling controls
-			if(auto>automin) {
+			if(auto>automin) { //If auto is greater than the minimum, subtract one, otherwise, go to max.
 				auto--;
 				wait1Msec(250);
 				} else {
@@ -232,17 +224,16 @@ task lcd { //For LCD Autonomous Selection
 			}
 		}
 		if(nLCDButtons==rightbutton) { //More Scrolling Controls
-			if(auto<automax) {
+			if(auto<automax) { //If auto is less than the max, add one, otherwise, go to min
 				auto++;
 				wait1Msec(250);
 				} else {
 				auto=automin;
 			}
 		}
-		if(nLCDButtons==centerbutton) { //Lock-in selected autonomous
+		if(nLCDButtons==centerbutton) { //Lock-in selected autonomous and end the task (see task schedule)
 			clearLCDLine(1);
-			stopTask(autoselectled);
-			stopTask(lcd);
+			autoselect=1;
 		}
 		switch(auto) { //Sets the LCD to display the name of selected Autonomous.
 		case 0:
@@ -325,6 +316,8 @@ task batteryled()
 		float power=SensorValue[PEPower]/270.0;
 		if(nImmediateBatteryLevel/1000>=8.5 && power>=8.5) { //Both full, blink LedFull
 			while(true) {
+				powerlevelCortex=1;
+				powerlevelExpander=1;
 				SensorValue[LedGreen]=0;
 				SensorValue[LedYel]=0;
 				SensorValue[LedRed]=0;
@@ -335,6 +328,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=8.5 && power>=8.0){ //Cortex full, PE good; solid Full, blink Green.
 			while(true) {
+				powerlevelCortex=1;
+				powerlevelExpander=2;
 				SensorValue[LedFull]=1;
 				SensorValue[LedYel]=0;
 				SensorValue[LedRed]=0;
@@ -345,6 +340,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=8.5 && power>=7.5) { //Cortex Full, PE OK; Solid Full, blink Yel
 			while(true) {
+				powerlevelCortex=1;
+				powerlevelExpander=3;
 				SensorValue[LedFull]=1;
 				SensorValue[LedGreen]=0;
 				SensorValue[LedRed]=0;
@@ -355,6 +352,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=8.5 && power<7.5) { //Cortex Full, PE Bad; Solid Full, Blink Red
 			while(true) {
+				powerlevelCortex=1;
+				powerlevelExpander=4;
 				SensorValue[LedFull]=1;
 				SensorValue[LedGreen]=0;
 				SensorValue[LedYel]=0;
@@ -365,6 +364,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=8.0 && power>=8.5) { //Cortex Good, PE Full; Solid Green, Blink Full
 			while(true) {
+				powerlevelCortex=2;
+				powerlevelExpander=1;
 				SensorValue[LedGreen]=1;
 				SensorValue[LedYel]=0;
 				SensorValue[LedRed]=0;
@@ -375,6 +376,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=8.0 && power>=8.0) { //Cortex Good, PE Good; Blink Green
 			while(true) {
+				powerlevelCortex=2;
+				powerlevelExpander=2;
 				SensorValue[LedFull]=0;
 				SensorValue[LedYel]=0;
 				SensorValue[LedRed]=0;
@@ -385,6 +388,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=8.0 && power>=7.5) { //Cortex Good, PE OK; Solid Green, Blink Yel
 			while(true) {
+				powerlevelCortex=2;
+				powerlevelExpander=3;
 				SensorValue[LedFull]=0;
 				SensorValue[LedGreen]=1;
 				SensorValue[LedRed]=0;
@@ -395,6 +400,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=8.0 && power<7.5) { //Cortex Good, PE Bad; Solid Green, Blink Red
 			while(true) {
+				powerlevelCortex=2;
+				powerlevelExpander=4;
 				SensorValue[LedFull]=0;
 				SensorValue[LedGreen]=1;
 				SensorValue[LedYel]=0;
@@ -405,6 +412,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=7.5 && power>=8.5) { //Cortex OK, PE Full; Solid Yel, Bink Full
 			while(true) {
+				powerlevelCortex=3;
+				powerlevelExpander=1;
 				SensorValue[LedGreen]=0;
 				SensorValue[LedYel]=1;
 				SensorValue[LedRed]=0;
@@ -415,6 +424,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=7.5 && power>=8.0) { //Cortex OK, PE Good; Solid Yel, Blink Green
 			while(true) {
+				powerlevelCortex=3;
+				powerlevelExpander=2;
 				SensorValue[LedFull]=0;
 				SensorValue[LedYel]=1;
 				SensorValue[LedRed]=0;
@@ -425,6 +436,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=7.5 && power>=7.5) { //Cortex OK, PE OK; Blink Yel
 			while(true) {
+				powerlevelCortex=3;
+				powerlevelExpander=3;
 				SensorValue[LedFull]=0;
 				SensorValue[LedGreen]=0;
 				SensorValue[LedRed]=0;
@@ -435,6 +448,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000>=7.5 && power<7.5) { //Cortex OK, PE Bad; Solid Yel, Blink Red
 			while(true) {
+				powerlevelCortex=3;
+				powerlevelExpander=4;
 				SensorValue[LedFull]=0;
 				SensorValue[LedGreen]=0;
 				SensorValue[LedYel]=1;
@@ -445,6 +460,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000<7.5 && power>=8.5) { //Cortex Bad, PE Full; Solid Red, Blink Full
 			while(true) {
+				powerlevelCortex=4;
+				powerlevelExpander=1;
 				SensorValue[LedGreen]=0;
 				SensorValue[LedYel]=0;
 				SensorValue[LedRed]=1;
@@ -455,6 +472,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000<7.5 && power>=8.0) { //Cortex Bad, PE Good; Solid Red, Blink Green
 			while(true) {
+				powerlevelCortex=4;
+				powerlevelExpander=2;
 				SensorValue[LedFull]=0;
 				SensorValue[LedYel]=0;
 				SensorValue[LedRed]=1;
@@ -465,6 +484,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000<7.5 && power>=7.5) { //Cortex Bad, PE OK; Solid Red, Blink Yel
 			while(true) {
+				powerlevelCortex=4;
+				powerlevelExpander=3;
 				SensorValue[LedFull]=0;
 				SensorValue[LedGreen]=0;
 				SensorValue[LedRed]=1;
@@ -475,6 +496,8 @@ task batteryled()
 			}
 			} else if(nImmediateBatteryLevel/1000<7.5 && power<7.5) { //Cortex Bad, PE Bad; Blink Red
 			while(true) {
+				powerlevelCortex=4;
+				powerlevelExpander=4;
 				SensorValue[LedFull]=0;
 				SensorValue[LedGreen]=0;
 				SensorValue[LedYel]=0;
@@ -486,11 +509,18 @@ task batteryled()
 		}
 	}
 }
+task scheduler { //Schedules the startup of the bot
+	startTask(lcd); //Starts with allowing us to select the autonomous, either with LCD or VexRT
+	startTask(autoled);
+	waitUntil(autoselect==1 || autostart==1); //waits until either we select our autonomous, or autonomous period starts.
+	stopTask(autoled); //stops the auto-selection tasks
+	stopTask(lcd);
+	startTask(batteryled); //starts the battery indicator lights.
+}
 void pre_auton()
 {
 	bStopTasksBetweenModes = false;
-	startTask(lcd);
-	startTask(autoselectled);
+	startTask(scheduler);
 }
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -566,12 +596,10 @@ task autonomous()
 
 task usercontrol()
 {
+	startTask(batteryled);
 	while (true)
 	{
-		motor[RightFront] = vexRT[Ch3]; //Left Front motor to left joystick
-		motor[RightBack] = vexRT[Ch3]; //Left Back motor to left joystick
-		motor[LeftFront] = vexRT[Ch2]; //Right Front to right joystick
-		motor[LeftBack] = vexRT[Ch2]; //Right Back to right joystick
+		move(vexRT[Ch2],vexRT[Ch3]); //Drive controls
 
 		//Tower controls
 		if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
@@ -598,10 +626,10 @@ task usercontrol()
 		}
 
 		//Arm controls
-		if(vexRT[Btn5U] == 1) {
+		if(vexRT[Btn5D] == 1) {
 			motor[ArmLeft] = 30;
 			motor[ArmRight] = 30;
-			} else if(vexRT[Btn5D] == 1) {//Extend Outwards
+			} else if(vexRT[Btn5U] == 1) {//Extend Outwards
 			motor[ArmLeft] = -90;
 			motor[ArmRight] = -90;
 			}	else{ //Stop arms if nothing is pressed
