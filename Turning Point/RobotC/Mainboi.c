@@ -43,6 +43,8 @@ float ctime;
 int debug = 0;
 float power;
 int ledmode = 1;
+int teststop = 1;
+int testmode = 0;
 // Power Level
 // Full = 1
 // Good = .75
@@ -69,6 +71,12 @@ void move_pivot_turn(int time, int power) { //Right Turn in place (pos. power = 
 	motor[RightFront] = 0;
 	motor[RightBack] = 0;
 }
+void move_pivot_turn_test(int power) {
+	motor[LeftFront]=-power;
+	motor[LeftBack]=-power;
+	motor[RightFront]=power;
+	motor[RightBack]=power;
+}
 void move_swing_turn(int time, int lpower, int rpower) { //Adjustable Angle Turns (allows for swing turns by setting one value higher than the other)
 	batterylevel(time);
 	motor[LeftFront] = lpower;
@@ -93,13 +101,31 @@ void move_straight(int time, int power) { //Move straight (positive for forward,
 	motor[RightFront] = 0;
 	motor[RightBack] = 0;
 }
+void move_straight_test(int power) {
+	motor[LeftFront] = power;
+	motor[LeftBack] = power;
+	motor[RightFront] = power;
+	motor[RightBack] = power;
+}
 void move(int lpower,int rpower) { //Drive control.
 	motor[LeftFront] = lpower;
 	motor[LeftBack] = lpower;
 	motor[RightFront] = rpower;
 	motor[RightBack] = rpower;
 }
-
+void allMotorsStop()
+{
+	motor[LeftBack]  = 0;
+	motor[LeftFront]  = 0;
+	motor[RightBack]  = 0;
+	motor[RightFront]  = 0;
+	motor[FLeftTower]  = 0;
+	motor[FRightTower]  = 0;
+	motor[BLeftTower]  = 0;
+	motor[BRightTower]  = 0;
+	motor[ArmLeft]  = 0;
+	motor[ArmRight] = 0;
+}
 void manipulator_tower(int time, int power) { //Raise/Lower Arm Tower
 	batterylevel(time);
 	motor[FLeftTower] = power;
@@ -331,7 +357,7 @@ task lcd { //For LCD Autonomous Selection
 		while(debug==1) { //Debug mode
 			char batteryvoltage[50];
 			int screenmin = 0;
-			int screenmax = 3;
+			int screenmax = 4;
 			if(nLCDButtons==leftright) {
 				debug=0;
 				wait1Msec(250);
@@ -425,6 +451,53 @@ task lcd { //For LCD Autonomous Selection
 					wait1Msec(250);
 				}
 				break;
+			case 4: //Recording and testing Autonomous times.
+				if(testmode==0) {
+					displayLCDCenteredString(0,"Record");
+				}
+				char autorecord[50];
+				sprintf(autorecord,"%2.2f",time1[T2]/1000.0);
+				if(teststop==-1) {
+					displayLCDCenteredString(1,autorecord);
+				}
+				switch(testmode) {
+				case 1:
+					displayLCDCenteredString(0,"Pivot-Left");
+					break;
+				case 2:
+					displayLCDCenteredString(0,"Pivot-Right");
+					break;
+				case 3:
+					displayLCDCenteredString(0,"Move-Forward");
+					break;
+				case 4:
+					displayLCDCenteredString(0,"Move-Backward");
+					break;
+				case 5:
+					displayLCDCenteredString(0,"Tower-Up");
+					break;
+				case 6:
+					displayLCDCenteredString(0,"Tower-Down");
+					break;
+				case 7:
+					displayLCDCenteredString(0,"Claw-Up");
+					break;
+				case 8:
+					displayLCDCenteredString(0,"Claw-Down");
+					break;
+				}
+				break;
+			case 5:
+				int motornum=0;
+				char motorpower;
+				switch(motornum) {
+				case 0:
+					displayLCDCenteredString(0,"Motor Power");
+					break;
+				case 1:
+					//sprintf(motorpower,"%f",motor[LeftFront]); //Gotta figure out how to convert motor to string.
+					//displayLCDCenteredString(1,motorpower);
+				}
 			}
 		}
 		while(debug==0) {
@@ -624,6 +697,43 @@ task usercontrol()
 			}	else{ //Stop arms if nothing is pressed
 			motor[ArmLeft] = 0;
 			motor[ArmRight] = 0;
+		}
+		//Debug Mode testing
+		while(debug==1||autostart==0) {
+			if(vexRT[Btn7L]==1) { //Pivot-Left
+				testmode=1;
+				clearTimer(T2);
+				wait1Msec(250);
+				if(teststop==-1) {
+					move_pivot_turn_test(127);
+				}
+				} else if(vexRT[Btn7R]==1) { //Pivot-Right
+				testmode=2;
+				clearTimer(T2);
+				wait1Msec(250);
+				if(teststop==-1) {
+					move_pivot_turn_test(-127);
+				}
+				} else if(vexRT[Btn8U]==1) { //Move Straight
+				testmode=3;
+				clearTimer(T2);
+				wait1Msec(250);
+				if(teststop==-1) {
+					move_straight_test(127);
+				}
+				} else if(vexRT[Btn8D]==1) {
+				testmode=4;
+				clearTimer(T2);
+				wait1Msec(250);
+				if(teststop==-1) {
+					move_straight_test(-127);
+				}
+				} else if(vexRT[Btn7D]==1) {
+				allMotorsStop();
+				teststop=teststop*-1;
+				clearTimer(T2);
+				wait1Msec(250);
+			}
 		}
 	}
 }
