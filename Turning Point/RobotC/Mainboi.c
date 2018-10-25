@@ -29,22 +29,43 @@
 
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
+/*--------------------------------------------------------------------------------------------------//
+//																																																  //
+//		Credits:                                                                                      //
+//		Drive-Control: Carmen Morgan                                                                  //
+//		Autonomous: Logan Housden, Carmen Morgan, Jordan                                              //
+//		Sensors: Logan Housden                                                                        //
+//																																																  //
+//--------------------------------------------------------------------------------------------------*/
 
-// Variables //
+//Variables //
+char auto1String[] = "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
+char auto2String[] = "abcdefghijk";
+char auto3String[] = "abcdefghijk";
+char auto4String[] = "abcdefghijk";
+char auto5String[] = "abcdefghijk";
+char auto6String[] = "abcdefghijk";
+char auto7String[] = "abcdefghijk";
+char auto8String[] = "abcdefghijk";
 int autostart=0;
 int auto=0; //Determines selected autonomous; starts off disabled.
 int autoselect;
 int automin = 0; //Minimum value for autonomous scrolling
 int automax = 8; //Maximum value for autonomous scrolling
+
+int screen = 0;
 float powerlevelCortex;
 float powerlevelExpander;
-float etime;
-float ctime;
-int debug = 0;
-float power;
-int ledmode = 1;
-int teststop = 1;
-int testmode = 0;
+float power; //Power Expander power level
+
+float etime; //Expander time(used with batterylevel()
+float ctime; //Cortex time(used with batterylevel()
+int recordTime=15;
+bool recordMode = false; //Controls Autonomous Recording
+bool debug = false; //Controls Debug toggle
+int ledmode = 1; //Controls LED mode
+
+// int count = 0; //For Record & Play
 // Power Level
 // Full = 1
 // Good = .75
@@ -55,10 +76,28 @@ int testmode = 0;
 
 // ---------- Functions ---------- //
 //function cap is 256, do not exceed this limit
+
+//Record & Play -Jordan & Logan- //
+
+//void recordAuto(char character) {
+//	if (recordMode && debug) {
+//		writeDebugStreamLine("autoString[%d] = '%c';",count ,character);
+//		count++;
+//	}
+//}
+
+//Autonomous Recording Function - Jordan
+void recordAuto(char character) {
+	if(recordMode && debug) {
+		writeDebugStream("%c",character);
+	}
+}
+//Battery Control Function - Carmen & Logan
 void batterylevel(float desiredTime) { //cpwr = Cortex power, epwr = Expander power
 	ctime=desiredTime*(1+(1-powerlevelCortex)); //AT=DT*(1+(1-BL)
 	etime=desiredTime*(1+(1-powerlevelExpander));
-}//6*(1+1-0)
+}
+//Movement Control Functions - Carmen & Logan
 void move_pivot_turn(int time, int power) { //Right Turn in place (pos. power = left, neg. = right) ---> 90 degree turn
 	batterylevel(time);
 	motor[LeftFront] = power;
@@ -70,12 +109,6 @@ void move_pivot_turn(int time, int power) { //Right Turn in place (pos. power = 
 	motor[LeftBack] = 0;
 	motor[RightFront] = 0;
 	motor[RightBack] = 0;
-}
-void move_pivot_turn_test(int power) {
-	motor[LeftFront]=-power;
-	motor[LeftBack]=-power;
-	motor[RightFront]=power;
-	motor[RightBack]=power;
 }
 void move_swing_turn(int time, int lpower, int rpower) { //Adjustable Angle Turns (allows for swing turns by setting one value higher than the other)
 	batterylevel(time);
@@ -89,6 +122,7 @@ void move_swing_turn(int time, int lpower, int rpower) { //Adjustable Angle Turn
 	motor[RightFront] = 0;
 	motor[RightBack] = 0;
 }
+
 void move_straight(int time, int power) { //Move straight (positive for forward, negative for reverse)
 	batterylevel(time);
 	motor[LeftFront] = power;
@@ -101,58 +135,75 @@ void move_straight(int time, int power) { //Move straight (positive for forward,
 	motor[RightFront] = 0;
 	motor[RightBack] = 0;
 }
-void move_straight_test(int power) {
-	motor[LeftFront] = power;
-	motor[LeftBack] = power;
-	motor[RightFront] = power;
-	motor[RightBack] = power;
-}
-void move(int lpower,int rpower) { //Drive control.
+void moveLeft(int lpower) { //Drive control.
 	motor[LeftFront] = lpower;
 	motor[LeftBack] = lpower;
+}
+void moveRight(int rpower) {
 	motor[RightFront] = rpower;
 	motor[RightBack] = rpower;
 }
-void allMotorsStop()
-{
-	motor[LeftBack]  = 0;
-	motor[LeftFront]  = 0;
-	motor[RightBack]  = 0;
-	motor[RightFront]  = 0;
-	motor[FLeftTower]  = 0;
-	motor[FRightTower]  = 0;
-	motor[BLeftTower]  = 0;
-	motor[BRightTower]  = 0;
-	motor[ArmLeft]  = 0;
-	motor[ArmRight] = 0;
-}
-void manipulator_tower(int time, int power) { //Raise/Lower Arm Tower
-	batterylevel(time);
+
+void manipulator_tower(int power) { //Raise/Lower Arm Tower
 	motor[FLeftTower] = power;
 	motor[BLeftTower] = power;
 	motor[BRightTower] = power;
 	motor[FRightTower] = power;
-	wait1Msec(ctime*1000);
-	motor[FLeftTower] = 0;
-	motor[BLeftTower] = 0;
-	motor[BRightTower] = 0;
-	motor[FRightTower] = 0;
 }
-void manipulator_arm(int time, int power) { //Raise/Lower Arm
-	batterylevel(time);
+
+void manipulator_arm(int power) { //Raise/Lower Arm
 	motor[ArmLeft] = power;
 	motor[ArmRight] = power;
-	wait1Msec(ctime*1000);
-	motor[ArmLeft] = 0;
-	motor[ArmRight] = 0;
 }
+//Dab Function (Why?) - Carmen
 void dab(int time, int power) {
 	batterylevel(time);
-	manipulator_tower(600,127);//#EpicGamesWinSlay2018
 	move_pivot_turn(etime*1000, power);
 	move_pivot_turn(etime*1000, -power);
 	move_swing_turn(etime*1000, power, power*-1);
 }
+//Autonomous Interpret Function - Jordan
+void interpretAuto(char *myAutoString) { //Need to move this down.
+	int i;
+	for (i = 0; i < strlen(myAutoString); i++) {
+		switch(myAutoString[i]) {
+		case 'a':
+			manipulator_tower(127);
+			break;
+		case 'b':
+			manipulator_tower(-127);
+			break;
+		case 'c':
+			manipulator_tower(0);
+		case 'd':
+			moveLeft(127);
+			break;
+		case 'e':
+			moveLeft(-127);
+			break;
+		case 'f':
+			moveRight(127);
+			break;
+		case 'g':
+			moveRight(-127);
+			break;
+		case 'h':
+			moveLeft(0);
+			moveRight(0);
+			break;
+		case 'i':
+			manipulator_arm(30);
+			break;
+		case 'j':
+			manipulator_arm(-90);
+			break;
+		case 'k':
+			manipulator_arm(0);
+			break;
+		}
+	}
+}
+//LED State Function - Logan (Idea: Jordan)
 void led_state(int led1, int led2, int led3, int led4) { //Sets LEDs to specified value.
 	/*
 	| 0 = Off
@@ -208,7 +259,9 @@ void led_state(int led1, int led2, int led3, int led4) { //Sets LEDs to specifie
 		} else if(led4==3) {
 	}
 }
+
 //Tasks// - Ensure that scheduler is the lowest user-created task
+//Autonomous LED Control - Logan
 task autoled { //Controls autonomous mode LED states
 	ledmode=1;
 	while(ledmode==1) {
@@ -243,6 +296,7 @@ task autoled { //Controls autonomous mode LED states
 		}
 	}
 }
+//Battery LED Control - Logan
 task batteryled() { //Controls battery mode LED states & power level assignments (needs to be split into a constantly running task) (or merge LED tasks into one)
 	ledmode=-1; //Used to switch between LED modes with the Debug mode on LCD
 	while(ledmode==-1) {
@@ -346,20 +400,23 @@ task batteryled() { //Controls battery mode LED states & power level assignments
 		}
 	}
 }
+//LCD Task & Debug Mode - Logan
 task lcd { //For LCD Autonomous Selection
 	int leftbutton = 1; //aliases for button numbers on LCD
 	int centerbutton = 2;
 	int rightbutton = 4;
 	int leftright = 5;
 	int battery = 1;
-	int screen = 0;
+	int motornum=0;
+	int motornummin=0;
+	int motornummax=10;
+	char motorpower[50];
 	while(true) {
-		while(debug==1) { //Debug mode
-			char batteryvoltage[50];
+		while(debug) { //Debug mode
 			int screenmin = 0;
-			int screenmax = 4;
-			if(nLCDButtons==leftright) {
-				debug=0;
+			int screenmax = 5;
+			if(nLCDButtons==leftright&&screen==0) {
+				debug=false;
 				wait1Msec(250);
 			}
 			if(nLCDButtons==leftbutton) { //Scrolling controls
@@ -394,6 +451,7 @@ task lcd { //For LCD Autonomous Selection
 				displayLCDCenteredString(1,"Mode");
 				break;
 			case 1:
+				char batteryvoltage[50];
 				if(nLCDButtons==centerbutton) {
 					battery=battery*-1;
 				}
@@ -413,21 +471,21 @@ task lcd { //For LCD Autonomous Selection
 				}
 				break;
 			case 2:
-				char autotime[50];
+				char autotime[5];
 				if(autostart==0) {
 					displayLCDCenteredString(0,"Run Autonomous?");
 				}
-				if(nLCDButtons==centerbutton) {
+				if(nLCDButtons==centerbutton&&autostart!=-1) {
 					autostart = -1;
 					clearTimer(T1);
-					displayLCDCenteredString(0,"Running!");
 					startTask(autonomous);
-					displayLCDCenteredString(1,autotime);
 				}
 				if(autostart==-1) {
 					sprintf(autotime,"%2.2f",time1[T1]/1000.0);
+					displayLCDCenteredString(0,"Running!");
 					displayLCDCenteredString(1,autotime);
 				}
+				displayLCDCenteredString(1,autotime);
 				break;
 			case 3:
 				displayLCDCenteredString(0,"LED Mode");
@@ -451,58 +509,100 @@ task lcd { //For LCD Autonomous Selection
 					wait1Msec(250);
 				}
 				break;
-			case 4: //Recording and testing Autonomous times.
-				if(testmode==0) {
-					displayLCDCenteredString(0,"Record");
+			case 4:
+				char timerRecord[6];
+				if(!recordMode) {
+					displayLCDCenteredString(0,"Record Off");
 				}
-				char autorecord[50];
-				sprintf(autorecord,"%2.2f",time1[T2]/1000.0);
-				if(teststop==-1) {
-					displayLCDCenteredString(1,autorecord);
+				if(recordMode) {
+					displayLCDCenteredString(0,"Record On");
+					sprintf(timerRecord,"%3.2f",time1[T3]/1000.0);
+					displayLCDCenteredString(1,timerRecord);
 				}
-				switch(testmode) {
-				case 1:
-					displayLCDCenteredString(0,"Pivot-Left");
-					break;
-				case 2:
-					displayLCDCenteredString(0,"Pivot-Right");
-					break;
-				case 3:
-					displayLCDCenteredString(0,"Move-Forward");
-					break;
-				case 4:
-					displayLCDCenteredString(0,"Move-Backward");
-					break;
-				case 5:
-					displayLCDCenteredString(0,"Tower-Up");
-					break;
-				case 6:
-					displayLCDCenteredString(0,"Tower-Down");
-					break;
-				case 7:
-					displayLCDCenteredString(0,"Claw-Up");
-					break;
-				case 8:
-					displayLCDCenteredString(0,"Claw-Down");
-					break;
+				if(nLCDButtons==centerbutton&&!recordMode) {
+					recordMode=true;
+					clearTimer(T3);
+					wait1Msec(250);
+				}
+				if(nLCDButtons==centerbutton&&recordMode) {
+					recordMode=false;
+					wait1Msec(250);
+				}
+				if(time1[T3]/1000.0>recordTime) {
+					recordMode=false;
 				}
 				break;
 			case 5:
-				int motornum=0;
-				char motorpower;
+				if(nLCDButtons==centerbutton) {
+					if(motornum<motornummax) {
+						motornum++;
+						wait1Msec(250);
+						} else {
+						motornum=motornummin;
+						wait1Msec(250);
+					}
+				}
 				switch(motornum) {
 				case 0:
 					displayLCDCenteredString(0,"Motor Power");
+					displayLCDCenteredString(1,"");
 					break;
 				case 1:
-					//sprintf(motorpower,"%f",motor[LeftFront]); //Gotta figure out how to convert motor to string.
-					//displayLCDCenteredString(1,motorpower);
+					sprintf(motorpower,"%d",motor[LeftFront]); //Gotta figure out how to convert motor to string.
+					displayLCDCenteredString(0,"LeftFront");
+					displayLCDCenteredString(1,motorpower);
+					break;
+				case 2:
+					sprintf(motorpower,"%d",motor[LeftBack]);
+					displayLCDCenteredString(0,"LeftBack");
+					displayLCDCenteredString(1,motorpower);
+					break;
+				case 3:
+					sprintf(motorpower,"%d",motor[RightFront]);
+					displayLCDCenteredString(0,"RightFront");
+					displayLCDCenteredString(1,motorpower);
+					break;
+				case 4:
+					sprintf(motorpower,"%d",motor[RightBack]);
+					displayLCDCenteredString(0,"RightBack");
+					displayLCDCenteredString(1,motorpower);
+					break;
+				case 5:
+					sprintf(motorpower,"%d",motor[FLeftTower]);
+					displayLCDCenteredString(0,"FLeftTower");
+					displayLCDCenteredString(1,motorpower);
+					break;
+				case 6:
+					sprintf(motorpower,"%d",motor[BLeftTower]);
+					displayLCDCenteredString(0,"BLeftTower");
+					displayLCDCenteredString(1,motorpower);
+					break;
+				case 7:
+					sprintf(motorpower,"%d",motor[FRightTower]);
+					displayLCDCenteredString(0,"FRightTower");
+					displayLCDCenteredString(1,motorpower);
+					break;
+				case 8:
+					sprintf(motorpower,"%d",motor[BRightTower]);
+					displayLCDCenteredString(0,"BRightTower");
+					displayLCDCenteredString(1,motorpower);
+					break;
+				case 9:
+					sprintf(motorpower,"%d",motor[ArmLeft]);
+					displayLCDCenteredString(0,"ArmLeft");
+					displayLCDCenteredString(1,motorpower);
+					break;
+				case 10:
+					sprintf(motorpower,"%d",motor[ArmRight]);
+					displayLCDCenteredString(0,"ArmRight");
+					displayLCDCenteredString(1,motorpower);
+					break;
 				}
 			}
 		}
-		while(debug==0) {
+		while(debug==false) {
 			if(nLCDButtons==leftright) {
-				debug=1;
+				debug=true;
 				wait1Msec(250);
 			}
 			if(nLCDButtons==leftbutton) { //Scrolling controls
@@ -522,59 +622,95 @@ task lcd { //For LCD Autonomous Selection
 				}
 			}
 			if(nLCDButtons==centerbutton) { //Lock-in selected autonomous and end the task (see task schedule)
-				displayLCDCenteredString(0, "Selected");
 				autoselect=1;
 			}
 			switch(auto) { //Sets the LCD to display the name of selected Autonomous and set the LEDs
 			case 0:
-				displayLCDCenteredString(0,"");
+				if(autoselect==1) {
+					displayLCDCenteredString(0,"Selected");
+					} else if(autoselect==0) {
+					displayLCDCenteredString(0,"");
+				}
 				displayLCDCenteredString(1, "Auto Off");
 				wait1Msec(100); //These waits keep the LCD from hogging up the Cortex CPU.
 				break;
 			case 1:
-				displayLCDCenteredString(0,"");
+				if(autoselect==1) {
+					displayLCDCenteredString(0,"Selected");
+					} else if(autoselect==0) {
+					displayLCDCenteredString(0,"");
+				}
 				displayLCDCenteredString(1, "Auto 1");
 				wait1Msec(100);
 				break;
 			case 2:
-				displayLCDCenteredString(0,"");
+				if(autoselect==1) {
+					displayLCDCenteredString(0,"Selected");
+					} else if(autoselect==0) {
+					displayLCDCenteredString(0,"");
+				}
 				displayLCDCenteredString(1, "Auto 2");
 				wait1Msec(100);
 				break;
 			case 3:
-				displayLCDCenteredString(0,"");
+				if(autoselect==1) {
+					displayLCDCenteredString(0,"Selected");
+					} else if(autoselect==0) {
+					displayLCDCenteredString(0,"");
+				}
 				displayLCDCenteredString(1, "Auto 3");
 				wait1Msec(100);
 				break;
 			case 4:
-				displayLCDCenteredString(0,"");
+				if(autoselect==1) {
+					displayLCDCenteredString(0,"Selected");
+					} else if(autoselect==0) {
+					displayLCDCenteredString(0,"");
+				}
 				displayLCDCenteredString(1, "Auto 4");
 				wait1Msec(100);
 				break;
 			case 5:
-				displayLCDCenteredString(0,"");
+				if(autoselect==1) {
+					displayLCDCenteredString(0,"Selected");
+					} else if(autoselect==0) {
+					displayLCDCenteredString(1, "");
+				}
 				displayLCDCenteredString(1, "Auto 5");
 				wait1Msec(100);
 				break;
 			case 6:
-				displayLCDCenteredString(0,"");
+				if(autoselect==1) {
+					displayLCDCenteredString(0,"Selected");
+					} else if(autoselect==0) {
+					displayLCDCenteredString(1, "");
+				}
 				displayLCDCenteredString(1, "Auto 6");
 				wait1Msec(100);
 				break;
 			case 7:
-				displayLCDCenteredString(0,"");
+				if(autoselect==1) {
+					displayLCDCenteredString(0,"Selected");
+					} else if(autoselect==0) {
+					displayLCDCenteredString(1, "");
+				}
 				displayLCDCenteredString(1, "Auto 7");
 				wait1Msec(100);
 				break;
 			case 8:
-				displayLCDCenteredString(0,"");
-				displayLCDCenteredString(1, "Auto 8");
+				if(autoselect==1) {
+					displayLCDCenteredString(0,"Selected");
+					} else if(autoselect==0) {
+					displayLCDCenteredString(1, "");
+				}
+				displayLCDCenteredString(1,"Auto 8");
 				wait1Msec(100);
 				break;
 			}
 		}
 	}
 }
+// Task Schedule - Logan
 task scheduler { //Schedules the startup of the bot and user-created tasks
 	bLCDBacklight = true;
 	startTask(autoled);
@@ -592,9 +728,10 @@ void pre_auton()
 	bStopTasksBetweenModes = false;
 	startTask(scheduler);
 }
+//Autonomous - Logan
 task autonomous()
 {
-	if(debug==0) {
+	if(debug==false) {
 		autostart=1;
 	}
 	switch(auto) { //Runs different autonomous based on the value of 'auto'
@@ -604,49 +741,49 @@ task autonomous()
 		}
 		break;
 	case 1:
-		move_straight(6,127);
+		interpretAuto(auto1String);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 2:
-		move_straight(6,-127);
+		interpretAuto(auto2String);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 3:
-		move_pivot_turn(6,127);
+		interpretAuto(auto3String);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 4:
-		move_pivot_turn(6,-127);
+		interpretAuto(auto4String);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 5:
-		move_swing_turn(5,127,0);
+		interpretAuto(auto5String);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 6:
-		move_swing_turn(5,0,127);
+		interpretAuto(auto6String);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 7:
-		move_swing_turn(5,-127,0);
+		interpretAuto(auto7String);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 8:
-		move_swing_turn(5,0,-127);
+		interpretAuto(auto8String);
 		if(autostart==-1) {
 			autostart=0;
 		}
@@ -656,84 +793,82 @@ task autonomous()
 ////////////////////////
 
 //User Control// - Please don't be stupid(like me) and make sure that everything control-related is in the while() loop.
-task usercontrol()
-{
-	while (true)
-	{
-		if(autostart==0) {
-			move(vexRT[Ch2],vexRT[Ch3]); //Drive controls
-		}
-		//Tower controls
-		if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
-			motor[FLeftTower] = 127; //FLeft = Left front tower motor, BRight = Back right tower motor
-			motor[BLeftTower] = 127;
-			motor[BRightTower] = 127;
-			motor[FRightTower] = 127;
-			} else if(vexRT[Btn6D] == 1) { //Tower two controls (right from front)
-			motor[FLeftTower] = -127;
-			motor[BLeftTower] = -127;
-			motor[BRightTower] = -127;
-			motor[FRightTower] = -127;
-			} else { //Stop towers if nothing is pressed
-			motor[FLeftTower] = 0;
-			motor[BLeftTower] = 0;
-			motor[BRightTower] = 0;
-			motor[FRightTower] = 0;
-		}
-
-		if(vexRT[Btn7U] == 1) { //Tower Up Button
-			manipulator_tower(300, 127);
-			} else if(vexRT[Btn7D] == 1) { //Tower Down Button
-			manipulator_tower(300,-127); //Hopefully this works... and doesn't break anything. =)
-		}
-
-		//Arm controls
-		if(vexRT[Btn5D] == 1) {
-			motor[ArmLeft] = 30;
-			motor[ArmRight] = 30;
-			} else if(vexRT[Btn5U] == 1) {//Extend Outwards
-			motor[ArmLeft] = -90;
-			motor[ArmRight] = -90;
-			}	else{ //Stop arms if nothing is pressed
-			motor[ArmLeft] = 0;
-			motor[ArmRight] = 0;
-		}
-		//Debug Mode testing
-		while(debug==1||autostart==0) {
-			if(vexRT[Btn7L]==1) { //Pivot-Left
-				testmode=1;
-				clearTimer(T2);
-				wait1Msec(250);
-				if(teststop==-1) {
-					move_pivot_turn_test(127);
-				}
-				} else if(vexRT[Btn7R]==1) { //Pivot-Right
-				testmode=2;
-				clearTimer(T2);
-				wait1Msec(250);
-				if(teststop==-1) {
-					move_pivot_turn_test(-127);
-				}
-				} else if(vexRT[Btn8U]==1) { //Move Straight
-				testmode=3;
-				clearTimer(T2);
-				wait1Msec(250);
-				if(teststop==-1) {
-					move_straight_test(127);
-				}
-				} else if(vexRT[Btn8D]==1) {
-				testmode=4;
-				clearTimer(T2);
-				wait1Msec(250);
-				if(teststop==-1) {
-					move_straight_test(-127);
-				}
-				} else if(vexRT[Btn7D]==1) {
-				allMotorsStop();
-				teststop=teststop*-1;
-				clearTimer(T2);
-				wait1Msec(250);
+// - Logan & Carmen
+task usercontrol() {
+	while (true) {
+		if(!debug) { //Normal Controls when not in Debug mode.
+			moveLeft(vexRT[Ch3]); //LeftDrive controls
+			moveRight(vexRT[Ch2]); //RightDrive controls
+			//Tower controls
+			if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
+				manipulator_tower(127);
+				} else if(vexRT[Btn6D] == 1) { //Tower two controls (right from front)
+				manipulator_tower(-127);
+				} else { //Stop towers if nothing is pressed
+				manipulator_tower(0);
 			}
+
+			//Arm controls
+			if(vexRT[Btn5D] == 1) {
+				manipulator_arm(30);
+				} else if(vexRT[Btn5U] == 1) {//Extend Outwards
+				manipulator_arm(-90);
+				}	else{ //Stop arms if nothing is pressed
+				manipulator_arm(0);
+			}
+		}
+
+		if(debug) { //Conditional Controls for Debug Mode.
+			if(screen==4) { //RecordAuto controls
+				if(recordTime>time1[T3]/1000.0) {
+					moveLeft(vexRT[Ch3]); //LeftDrive controls
+					moveRight(vexRT[Ch2]); //RightDrive controls
+					//Tower controls
+					if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
+						recordAuto('a')
+
+						;
+						manipulator_tower(127);
+						} else if(vexRT[Btn6D] == 1) { //Tower two controls (right from front)
+						recordAuto('b');
+						manipulator_tower(-127);
+						} else { //Stop towers if nothing is pressed
+						recordAuto('c');
+						manipulator_tower(0);
+					}
+
+					//Arm controls
+					if(vexRT[Btn5D] == 1) {
+						recordAuto('i');
+						manipulator_arm(30);
+						} else if(vexRT[Btn5U] == 1) {//Extend Outwards
+						recordAuto('j');
+						manipulator_arm(-90);
+						}	else{ //Stop arms if nothing is pressed
+						recordAuto('k');
+						manipulator_arm(0);
+					}
+				}
+				if(recordTime<time1[T3]/1000.0) {
+					allMotorsOff();
+				}
+			}
+		}
+		//RecordAuto Channel Statements
+		if(motor[LeftFront]>0) {
+			recordAuto('d');
+		}
+		if(motor[LeftFront]<0) { //When left motor is negative, print 'e' to debug stream.
+			recordAuto('e');
+		}
+		if(motor[RightFront]>0) { //When right motor is positive, print 'f' to debug stream.
+			recordAuto('f');
+		}
+		if(motor[RightFront]<0) { //When right motor is negative, print 'g' to debug stream.
+			recordAuto('g');
+		}
+		if(motor[RightFront]==0 && motor[LeftFront]==0) { //When left and right motors are off, print 'z' to debug stream (so interpretAuto knows to do nothing)
+			recordAuto('h');
 		}
 	}
 }
