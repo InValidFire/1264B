@@ -39,7 +39,7 @@
 //--------------------------------------------------------------------------------------------------*/
 
 //Variables //
-char auto1String[] = "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
+char auto1String[] = "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";
 char auto2String[] = "abcdefghijk";
 char auto3String[] = "abcdefghijk";
 char auto4String[] = "abcdefghijk";
@@ -61,6 +61,7 @@ float power; //Power Expander power level
 float etime; //Expander time(used with batterylevel()
 float ctime; //Cortex time(used with batterylevel()
 int recordTime=15;
+int recordWait=50;
 bool recordMode = false; //Controls Autonomous Recording
 bool debug = false; //Controls Debug toggle
 int ledmode = 1; //Controls LED mode
@@ -135,73 +136,12 @@ void move_straight(int time, int power) { //Move straight (positive for forward,
 	motor[RightFront] = 0;
 	motor[RightBack] = 0;
 }
-void moveLeft(int lpower) { //Drive control.
-	motor[LeftFront] = lpower;
-	motor[LeftBack] = lpower;
-}
-void moveRight(int rpower) {
-	motor[RightFront] = rpower;
-	motor[RightBack] = rpower;
-}
-
-void manipulator_tower(int power) { //Raise/Lower Arm Tower
-	motor[FLeftTower] = power;
-	motor[BLeftTower] = power;
-	motor[BRightTower] = power;
-	motor[FRightTower] = power;
-}
-
-void manipulator_arm(int power) { //Raise/Lower Arm
-	motor[ArmLeft] = power;
-	motor[ArmRight] = power;
-}
 //Dab Function (Why?) - Carmen
 void dab(int time, int power) {
 	batterylevel(time);
 	move_pivot_turn(etime*1000, power);
 	move_pivot_turn(etime*1000, -power);
 	move_swing_turn(etime*1000, power, power*-1);
-}
-//Autonomous Interpret Function - Jordan
-void interpretAuto(char *myAutoString) { //Need to move this down.
-	int i;
-	for (i = 0; i < strlen(myAutoString); i++) {
-		switch(myAutoString[i]) {
-		case 'a':
-			manipulator_tower(127);
-			break;
-		case 'b':
-			manipulator_tower(-127);
-			break;
-		case 'c':
-			manipulator_tower(0);
-		case 'd':
-			moveLeft(127);
-			break;
-		case 'e':
-			moveLeft(-127);
-			break;
-		case 'f':
-			moveRight(127);
-			break;
-		case 'g':
-			moveRight(-127);
-			break;
-		case 'h':
-			moveLeft(0);
-			moveRight(0);
-			break;
-		case 'i':
-			manipulator_arm(30);
-			break;
-		case 'j':
-			manipulator_arm(-90);
-			break;
-		case 'k':
-			manipulator_arm(0);
-			break;
-		}
-	}
 }
 //LED State Function - Logan (Idea: Jordan)
 void led_state(int led1, int led2, int led3, int led4) { //Sets LEDs to specified value.
@@ -259,8 +199,249 @@ void led_state(int led1, int led2, int led3, int led4) { //Sets LEDs to specifie
 		} else if(led4==3) {
 	}
 }
+void moveLeft(int lpower) { //Drive control. If autonomous is started either in competition (1), or testing (-1), run for 50ms.
+	if(autostart!=0) {
+		motor[LeftFront] = lpower;
+		motor[LeftBack] = lpower;
+		wait1Msec(recordWait);
+	}
+	if(autostart==0) {
+		motor[LeftFront] = lpower;
+		motor[LeftBack] = lpower;
+	}
+}
+void moveRight(int rpower) {
+	if(autostart!=0) {
+		motor[RightFront] = rpower;
+		motor[RightBack] = rpower;
+		wait1Msec(recordWait);
+	}
+	if(autostart==0) {
+		motor[RightFront] = rpower;
+		motor[RightBack] = rpower;
+	}
+}
 
+void manipulatorTower(int power) { //Raise/Lower Arm Tower
+	if(autostart!=0) {
+		motor[FLeftTower] = power;
+		motor[BLeftTower] = power;
+		motor[BRightTower] = power;
+		motor[FRightTower] = power;
+		wait1Msec(recordWait);
+	}
+	if(autostart==0) {
+		motor[FLeftTower] = power;
+		motor[BLeftTower] = power;
+		motor[BRightTower] = power;
+		motor[FRightTower] = power;
+	}
+}
+
+void manipulatorArm(int power) { //Raise/Lower Arm
+	if(autostart!=0) {
+		motor[ArmLeft] = power;
+		motor[ArmRight] = power;
+		wait1Msec(recordWait);
+	}
+	if(autostart==0) {
+		motor[ArmLeft] = power;
+		motor[ArmRight] = power;
+	}
+}
+//Autonomous Interpret Function - Jordan
+/*void interpretAuto(char *myAutoString) { //Need to split this, right now it's all running in a line, can't have that. We need it to run simultaneously.
+int i;
+for (i = 0; i < strlen(myAutoString); i++) {
+switch(myAutoString[i]) {
+case 'a':
+manipulator_tower(127);
+break;
+case 'b':
+manipulator_tower(-127);
+break;
+case 'c':
+manipulator_tower(0);
+case 'd':
+moveLeft(127);
+break;
+case 'e':
+moveLeft(-127);
+break;
+case 'f':
+moveRight(127);
+break;
+case 'g':
+moveRight(-127);
+break;
+case 'h':
+moveLeft(0);
+break;
+case 'i':
+manipulator_arm(30);
+break;
+case 'j':
+manipulator_arm(-90);
+break;
+case 'k':
+manipulator_arm(0);
+break;
+case 'l':
+moveRight(0);
+break;
+}
+}
+}
+*/
+void interpretMoveLeft(char *myAutoString) { //possible bug - checks for each case on every letter, but will only find a matching case on one of every 4, potentially throwing off execution times
+	int i;
+	for(i = 0; i < strlen(myAutoString); i++) {
+		switch(myAutoString[i]) {
+		case 'd':
+			moveLeft(127);
+			break;
+		case 'e':
+			moveLeft(-127);
+			break;
+		case 'h':
+			moveLeft(0);
+		}
+	}
+}
+void interpretMoveRight(char *myAutoString) {
+	int i;
+	for(i = 0; i < strlen(myAutoString); i++) {
+		switch(myAutoString[i]) {
+		case 'f':
+			moveRight(127);
+			break;
+		case 'g':
+			moveRight(-127);
+			break;
+		case 'l':
+			moveRight(0);
+		}
+	}
+}
+void interpretManipulatorTower(char *myAutoString) { //possible bug - checks for each case on every letter, but will only find a matching case on one of every 4, potentially throwing off execution times
+	int i;
+	for(i = 0; i < strlen(myAutoString); i++) {
+		switch(myAutoString[i]) {
+		case 'a':
+			manipulatorTower(127);
+			break;
+		case 'b':
+			manipulatorTower(-127);
+			break;
+		case 'c':
+			manipulatorTower(0);
+		}
+	}
+}
+void interpretManipulatorArm(char *myAutoString) { //possible bug - checks for each case on every letter, but will only find a matching case on one of every 4, potentially throwing off execution times
+	int i;
+	for(i = 0; i < strlen(myAutoString); i++) {
+		switch(myAutoString[i]) {
+		case 'i':
+			manipulatorArm(30);
+			break;
+		case 'j':
+			manipulatorArm(-90);
+			break;
+		case 'k':
+			manipulatorArm(0);
+		}
+	}
+}
 //Tasks// - Ensure that scheduler is the lowest user-created task
+task recordMoveLeft {
+	/*while(debug) { //While in Debug mode
+		if(vexRT[Ch3]>3) { //If Left-Joystick is positive send 'd' to log.
+			wait1Msec(recordWait);
+			if(vexRT[Ch3]>3) {
+				recordAuto('d');
+			}
+			}else if(vexRT[Ch3]<-3) { //If Left-Joystick is negative send 'e' to log.
+			wait1Msec(recordWait);
+			if(vexRT[Ch3]<-3) {
+				recordAuto('e');
+			}
+			}else if(vexRT[Ch3]>-3&&vexRT[Ch3]<3) { //If within deadzone, record nothing.
+			wait1Msec(recordWait);
+			if(vexRT[Ch3]>-3&&vexRT[Ch3]<3) {
+				recordAuto('h');
+			}
+		}
+	}*/
+}
+task recordMoveRight {
+	/*while(debug) {
+		if(vexRT[Ch2]>3) {
+			wait1Msec(recordWait);
+			if(vexRT[Ch2]>3) {
+				recordAuto('f');
+			}
+			}else if(vexRT[Ch2]<-3) {
+			wait1Msec(recordWait);
+			if(vexRT[Ch2]<-3) {
+				recordAuto('g');
+			}
+			}else if(vexRT[Ch2]<3&&vexRT[Ch2]>-3) {
+			wait1Msec(recordWait);
+			if(vexRT[Ch2]<3&&vexRT[Ch2]>-3) {
+				recordAuto('l');
+			}
+		}
+	}*/
+}
+task recordTower {
+	/*while(debug) {
+		if(vexRT[Btn6U]==1) {
+			wait1Msec(recordWait);
+			if(vexRT[Btn6D]==1) {
+				recordAuto('a');
+			}
+			}else if(vexRT[Btn6D]==1) {
+			wait1Msec(recordWait);
+			if(vexRT[Btn6D]==1) {
+				recordAuto('b');
+			}
+			} else if(vexRT[Btn6U]==0&&vexRT[Btn6D]==0) {
+			wait1Msec(recordWait);
+			if(vexRT[Btn6U]==0&&vexRT[Btn6D]==0) {
+				recordAuto('c');
+			}
+		}
+	}*/
+}
+task recordArm { //Trying to get one to work for 15 seconds... 11.23s
+	while(true) {
+		if(autostart!=0) {
+			interpretManipulatorArm(auto1String);
+			if(autostart==-1) {
+				autostart=0;
+			}
+		}
+		if(autostart==0) {
+			if(vexRT[Btn5D]==1) {
+				wait1Msec(recordWait);
+				if(vexRT[Btn5D]==1) {
+					recordAuto('i');
+				}
+				} else if(vexRT[Btn5U]==1) {
+				wait1Msec(recordWait);
+				if(vexRT[Btn5U]==1) {
+					recordAuto('j');
+				}
+				} else if(vexRT[Btn5U]==0&&vexRT[Btn5D]==0) {
+				wait1Msec(recordWait);
+				if(vexRT[Btn5U]==0&&vexRT[Btn5D]==0) {
+					recordAuto('k');
+				}
+			}
+		}
+	}
+}
 //Autonomous LED Control - Logan
 task autoled { //Controls autonomous mode LED states
 	ledmode=1;
@@ -407,6 +588,7 @@ task lcd { //For LCD Autonomous Selection
 	int rightbutton = 4;
 	int leftright = 5;
 	int battery = 1;
+	bool debugRecordStart = false; //Used to initialize the recordAuto tasks in Debug mode only.
 	int motornum=0;
 	int motornummin=0;
 	int motornummax=10;
@@ -415,6 +597,13 @@ task lcd { //For LCD Autonomous Selection
 		while(debug) { //Debug mode
 			int screenmin = 0;
 			int screenmax = 5;
+			if(!debugRecordStart) {
+				startTask(recordMoveLeft);
+				startTask(recordMoveRight);
+				startTask(recordTower);
+				startTask(recordArm);
+				debugRecordStart=true;
+			}
 			if(nLCDButtons==leftright&&screen==0) {
 				debug=false;
 				wait1Msec(250);
@@ -601,6 +790,9 @@ task lcd { //For LCD Autonomous Selection
 			}
 		}
 		while(debug==false) {
+			if(debugRecordStart) {
+				debugRecordStart=false;
+			}
 			if(nLCDButtons==leftright) {
 				debug=true;
 				wait1Msec(250);
@@ -741,49 +933,46 @@ task autonomous()
 		}
 		break;
 	case 1:
-		interpretAuto(auto1String);
-		if(autostart==-1) {
-			autostart=0;
-		}
+		startTask(recordArm);
 		break;
 	case 2:
-		interpretAuto(auto2String);
+		startTask(recordArm);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 3:
-		interpretAuto(auto3String);
+		startTask(recordArm);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 4:
-		interpretAuto(auto4String);
+		startTask(recordArm);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 5:
-		interpretAuto(auto5String);
+		startTask(recordArm);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 6:
-		interpretAuto(auto6String);
+		startTask(recordArm);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 7:
-		interpretAuto(auto7String);
+		startTask(recordArm);
 		if(autostart==-1) {
 			autostart=0;
 		}
 		break;
 	case 8:
-		interpretAuto(auto8String);
+		startTask(recordArm);
 		if(autostart==-1) {
 			autostart=0;
 		}
@@ -801,74 +990,49 @@ task usercontrol() {
 			moveRight(vexRT[Ch2]); //RightDrive controls
 			//Tower controls
 			if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
-				manipulator_tower(127);
+				manipulatorTower(127);
 				} else if(vexRT[Btn6D] == 1) { //Tower two controls (right from front)
-				manipulator_tower(-127);
+				manipulatorTower(-127);
 				} else { //Stop towers if nothing is pressed
-				manipulator_tower(0);
+				manipulatorTower(0);
 			}
 
 			//Arm controls
 			if(vexRT[Btn5D] == 1) {
-				manipulator_arm(30);
+				manipulatorArm(30);
 				} else if(vexRT[Btn5U] == 1) {//Extend Outwards
-				manipulator_arm(-90);
+				manipulatorArm(-90);
 				}	else{ //Stop arms if nothing is pressed
-				manipulator_arm(0);
+				manipulatorArm(0);
 			}
 		}
 
 		if(debug) { //Conditional Controls for Debug Mode.
-			if(screen==4) { //RecordAuto controls
+			if(screen==4) {//RecordAuto controls
 				if(recordTime>time1[T3]/1000.0) {
 					moveLeft(vexRT[Ch3]); //LeftDrive controls
 					moveRight(vexRT[Ch2]); //RightDrive controls
 					//Tower controls
 					if(vexRT[Btn6U] == 1) { //Tower one controls (left from front)
-						recordAuto('a')
-
-						;
-						manipulator_tower(127);
+						manipulatorTower(127);
 						} else if(vexRT[Btn6D] == 1) { //Tower two controls (right from front)
-						recordAuto('b');
-						manipulator_tower(-127);
+						manipulatorTower(-127);
 						} else { //Stop towers if nothing is pressed
-						recordAuto('c');
-						manipulator_tower(0);
+						manipulatorTower(0);
 					}
-
 					//Arm controls
 					if(vexRT[Btn5D] == 1) {
-						recordAuto('i');
-						manipulator_arm(30);
+						manipulatorArm(30);
 						} else if(vexRT[Btn5U] == 1) {//Extend Outwards
-						recordAuto('j');
-						manipulator_arm(-90);
+						manipulatorArm(-90);
 						}	else{ //Stop arms if nothing is pressed
-						recordAuto('k');
-						manipulator_arm(0);
+						manipulatorArm(0);
 					}
 				}
 				if(recordTime<time1[T3]/1000.0) {
 					allMotorsOff();
 				}
 			}
-		}
-		//RecordAuto Channel Statements
-		if(motor[LeftFront]>0) {
-			recordAuto('d');
-		}
-		if(motor[LeftFront]<0) { //When left motor is negative, print 'e' to debug stream.
-			recordAuto('e');
-		}
-		if(motor[RightFront]>0) { //When right motor is positive, print 'f' to debug stream.
-			recordAuto('f');
-		}
-		if(motor[RightFront]<0) { //When right motor is negative, print 'g' to debug stream.
-			recordAuto('g');
-		}
-		if(motor[RightFront]==0 && motor[LeftFront]==0) { //When left and right motors are off, print 'z' to debug stream (so interpretAuto knows to do nothing)
-			recordAuto('h');
 		}
 	}
 }
