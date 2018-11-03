@@ -1,61 +1,53 @@
-char auto1String[301];
-char a1PartOne[] = "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";//150 chars
-char a1PartTwo[] = "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";//150 chars
-char auto2String[301];
+#include "Mainboi.c"
+// Each string should be about 1200 characters. divided by 4 (1 for each control type state), characters processed each tick. multiplied by the length of each tick which is 50ms, and divide that by 1000 to convert it to seconds.
+//((Total Characters/Unique charaters)*recordWait)/1000= time (in seconds)
+//In this case, ((50/1)*50ms)/1000ms=15s
+
+/*Prepped the autonomous to only have two options, but eight parts for the 1200 characters.
+*Also removed the extra statements from the autonomous task, and the LCD display.
+*Our problem now is the strings aren't consistent in their printing patterns. It doesn't always print in the same order. Occasionally a character will switch with another.
+* So making the 'i' skip 4 characters will not work as long as this issue occurs.
+*/
+char auto1String[301]="";
+char a1PartOne[] = "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";//150 chars
+char a1PartTwo[] = "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";//150 chars
+char a1PartThree[] = "";
+char a1PartFour[] = "";
+char a1PartFive[] = "";
+char a1PartSix[] = "";
+char a1PartSeven[] = "";
+char a1PartEight[] = "";
+char auto2String[301]="";
 char a2PartOne[] = "placeholder";//150 chars
 char a2PartTwo[] = "placeholder";//150 chars
-char auto3String[301];
-char a3PartOne[] = "placeholder";//150 chars
-char a3PartTwo[] = "placeholder";//150 chars
-char auto4String[301];
-char a4PartOne[] = "placeholder";//150 chars
-char a4PartTwo[] = "placeholder";//150 chars
-char auto5String[301];
-char a5PartOne[] = "placeholder";//150 chars
-char a5PartTwo[] = "placeholder";//150 chars
-char auto6String[301];
-char a6PartOne[] = "placeholder";//150 chars
-char a6PartTwo[] = "placeholder";//150 chars
-char auto7String[301];
-char a7PartOne[] = "placeholder";//150 chars
-char a7PartTwo[] = "placeholder";//150 chars
-char auto8String[301];
-char a8PartOne[] = "placeholder";//150 chars
-char a8PartTwo[] = "placeholder";//150 chars
-
+char a2PartThree[] = "";
+char a2PartFour[] = "";
+char a2PartFive[] = "";
+char a2PartSix[] = "";
+char a2PartSeven[] = "";
+char a2PartEight[] = "";
+//Removed recDebug statements, trying to save memory.
 void prepAutoString(int num) {
 	switch(num) {
 	case 1:
 		strcat(auto1String,a1PartOne);
 		strcat(auto1String,a1PartTwo);
+		strcat(auto1String,a1PartThree);
+		strcat(auto1String,a1PartFour);
+		strcat(auto1String,a1PartFive);
+		strcat(auto1String,a1PartSix);
+		strcat(auto1String,a1PartSeven);
+		strcat(auto1String,a1PartEight);
 		break;
 	case 2:
 		strcat(auto2String,a2PartOne);
 		strcat(auto2String,a2PartTwo);
-		break;
-	case 3:
-		strcat(auto3String,a3PartOne);
-		strcat(auto3String,a3PartTwo);
-		break;
-	case 4:
-		strcat(auto4String,a4PartOne);
-		strcat(auto4String,a4PartTwo);
-		break;
-	case 5:
-		strcat(auto5String,a5PartOne);
-		strcat(auto5String,a5PartTwo);
-		break;
-	case 6:
-		strcat(auto6String,a6PartOne);
-		strcat(auto6String,a6PartTwo);
-		break;
-	case 7:
-		strcat(auto7String,a7PartOne);
-		strcat(auto7String,a7PartTwo);
-		break;
-	case 8:
-		strcat(auto8String,a8PartOne);
-		strcat(auto8String,a8PartTwo);
+		strcat(auto2String,a2PartThree);
+		strcat(auto2String,a2PartFour);
+		strcat(auto2String,a2PartFive);
+		strcat(auto2String,a2PartSix);
+		strcat(auto2String,a2PartSeven);
+		strcat(auto2String,a2PartEight);
 		break;
 	}
 }
@@ -67,24 +59,6 @@ char *getAutoString(int num) {
 		break;
 	case 2:
 		return(auto2String);
-		break;
-	case 3:
-		return(auto3String);
-		break;
-	case 4:
-		return(auto4String);
-		break;
-	case 5:
-		return(auto5String);
-		break;
-	case 6:
-		return(auto6String);
-		break;
-	case 7:
-		return(auto7String);
-		break;
-	case 8:
-		return(auto8String);
 		break;
 	}
 	return NULL;

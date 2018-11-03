@@ -38,13 +38,6 @@
 //																																																  //
 //--------------------------------------------------------------------------------------------------*/
 #include "RecAndPlay.h" //Contains all modular components of the Record & Play system.
-//Variables // Each string should be about 1200 characters. divided by 4 (1 for each control type state), characters processed each tick. multiplied by the length of each tick which is 50ms, and divide that by 1000 to convert it to seconds.
-//((Total Characters/Unique charaters)*recordWait)/1000= time (in seconds)
-//In this case, ((50/1)*50ms)/1000ms=15s
-
-//These strings are run through the interpreter functions to read the string, and run the matching actions.
-//Im starting to encapsulate in a seperate file
-
 
 int autostart=0; //States whether or not autonomous has started
 /* Possible states: autostart
@@ -55,7 +48,7 @@ int autostart=0; //States whether or not autonomous has started
 int auto=0; //Determines selected autonomous; starts off disabled.
 int autoselect; //Determines if we've selected LCD autonomous
 int automin = 0; //Minimum value for LCD autonomous scrolling
-int automax = 8; //Maximum value for LCD autonomous scrolling
+int automax = 2; //Maximum value for LCD autonomous scrolling
 
 int screen = 0; //Controls LCD display
 float powerlevelCortex;
@@ -69,7 +62,11 @@ int recordTime=15; //Length of time to record for (autonomous recording)
 int recordWait=50; //Length of time to wait in between key logging. (in milliseconds)
 bool recordMode = false; //Controls Autonomous Recording
 bool debug = false; //Controls Debug toggle
-bool debugoutput = false;
+bool debugoutput = false; //Output log statements to Debug Stream
+int debugminutes;
+int debugseconds;
+int debugms;
+
 int ledmode = 1; //Controls LED mode
 
 // int count = 0; //For Record & Play
@@ -207,9 +204,17 @@ void led_state(int led1, int led2, int led3, int led4) { //Sets LEDs to specifie
 }
 void moveLeft(int lpower) { //Drive control. If autonomous is started either in competition (1), or testing (-1), run for 50ms.
 	if(autostart!=0) {
+		if(debugoutput) {
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Autonomous is running function: 'moveLeft'",debugminutes,debugseconds,debugms);
+			wait1Msec(1);
+		}
 		motor[LeftFront] = lpower;
 		motor[LeftBack] = lpower;
 		wait1Msec(recordWait);
+		if(debugoutput) {
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Autonomous has finished function: 'moveLeft'",debugminutes,debugseconds,debugms);
+			wait1Msec(1);
+		}
 	}
 	if(autostart==0) {
 		motor[LeftFront] = lpower;
@@ -218,9 +223,17 @@ void moveLeft(int lpower) { //Drive control. If autonomous is started either in 
 }
 void moveRight(int rpower) {
 	if(autostart!=0) {
+		if(debugoutput) {
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Autonomous is running function: 'moveRight'",debugminutes,debugseconds,debugms);
+			wait1Msec(1);
+		}
 		motor[RightFront] = rpower;
 		motor[RightBack] = rpower;
 		wait1Msec(recordWait);
+		if(debugoutput) {
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Autonomous has finished function: 'moveRight'",debugminutes,debugseconds,debugms);
+			wait1Msec(1);
+		}
 	}
 	if(autostart==0) {
 		motor[RightFront] = rpower;
@@ -230,11 +243,19 @@ void moveRight(int rpower) {
 
 void manipulatorTower(int power) { //Raise/Lower Arm Tower
 	if(autostart!=0) {
+		if(debugoutput) {
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Autonomous is running function: 'manipulatorTower'",debugminutes,debugseconds,debugms);
+			wait1Msec(1);
+		}
 		motor[FLeftTower] = power;
 		motor[BLeftTower] = power;
 		motor[BRightTower] = power;
 		motor[FRightTower] = power;
 		wait1Msec(recordWait);
+		if(debugoutput) {
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Autonomous has finished function: 'manipulatorTower'",debugminutes,debugseconds,debugms);
+			wait1Msec(1);
+		}
 	}
 	if(autostart==0) {
 		motor[FLeftTower] = power;
@@ -246,70 +267,34 @@ void manipulatorTower(int power) { //Raise/Lower Arm Tower
 
 void manipulatorArm(int power) { //Raise/Lower Arm
 	if(autostart!=0) {
+		if(debugoutput) {
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Autonomous is running function: 'manipulatorArm'",debugminutes,debugseconds,debugms);
+			wait1Msec(1);
+		}
 		motor[ArmLeft] = power;
 		motor[ArmRight] = power;
 		wait1Msec(recordWait);
+		if(debugoutput) {
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Autonomous has finished function: 'manipulatorArm'",debugminutes,debugseconds,debugms);
+			wait1Msec(1);
+		}
 	}
 	if(autostart==0) {
 		motor[ArmLeft] = power;
 		motor[ArmRight] = power;
 	}
 }
-//Autonomous Interpret Function - Jordan
-/*void interpretAuto(char *myAutoString) { //Need to split this, right now it's all running in a line, can't have that. We need it to run simultaneously.
-int i;
-for (i = 0; i < strlen(myAutoString); i++) {
-switch(myAutoString[i]) {
-case 'a':
-manipulator_tower(127);
-break;
-case 'b':
-manipulator_tower(-127);
-break;
-case 'c':
-manipulator_tower(0);
-case 'd':
-moveLeft(127);
-break;
-case 'e':
-moveLeft(-127);
-break;
-case 'f':
-moveRight(127);
-break;
-case 'g':
-moveRight(-127);
-break;
-case 'h':
-moveLeft(0);
-break;
-case 'i':
-manipulator_arm(30);
-break;
-case 'j':
-manipulator_arm(-90);
-break;
-case 'k':
-manipulator_arm(0);
-break;
-case 'l':
-moveRight(0);
-break;
-}
-}
-}
-*/
 
+//Autonomous Interpret Function - Jordan & Logan
 //These are the interpreter functions, depending on the charater read, it will run the corresponding action.
 void interpretMoveLeft(int num) { //possible bug - checks for each case on every letter, but will only find a matching case on one of every 4, potentially throwing off execution times
 	if(debugoutput) {
-		writeDebugStreamLine("Running function 'interpretMoveLeft'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Running function 'interpretMoveLeft'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	int i;
-	char myAutoString[301] = getAutoString(num);
-	for(i = 0; i < strlen(myAutoString); i++) {
-		switch(myAutoString[i]) {
+	for(i = 0; i < strlen(getAutoString(num)); i++) {
+		switch(getAutoString(num)[i]) {
 		case 'd':
 			moveLeft(127);
 			break;
@@ -319,21 +304,25 @@ void interpretMoveLeft(int num) { //possible bug - checks for each case on every
 		case 'h':
 			moveLeft(0);
 		}
+		if(debugoutput) {
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Finished function 'interpretMoveLeft'.",debugminutes,debugseconds,debugms);
+			wait1Msec(1);
+		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Finished function 'interpretMoveLeft'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]interpretMoveLeft ran '%d' many times",debugminutes,debugseconds,debugms,i);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Finished function 'interpretMoveLeft'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 void interpretMoveRight(int num) {
 	if(debugoutput) {
-		writeDebugStreamLine("Running function 'interpretMoveRight'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Running function 'interpretMoveRight'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	int i;
-	char myAutoString[301] = getAutoString(num);
-	for(i = 0; i < strlen(myAutoString); i++) {
-		switch(myAutoString[i]) {
+	for(i = 0; i < strlen(getAutoString(num)); i++) {
+		switch(getAutoString(num)[i]) {
 		case 'f':
 			moveRight(127);
 			break;
@@ -345,19 +334,19 @@ void interpretMoveRight(int num) {
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Finished function 'interpretMoveRight'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]interpretMoveRight ran '%d' many times",debugminutes,debugseconds,debugms,i);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Finished function 'interpretMoveRight'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 void interpretManipulatorTower(int num) { //possible bug - checks for each case on every letter, but will only find a matching case on one of every 4, potentially throwing off execution times
 	if(debugoutput) {
-		writeDebugStreamLine("Running function 'interpretManipulatorTower'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Running function 'interpretManipulatorTower'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	int i;
-	char myAutoString[301] = getAutoString(num);
-	for(i = 0; i < strlen(myAutoString); i++) {
-		switch(myAutoString[i]) {
+	for(i = 0; i < strlen(getAutoString(num)); i++) {
+		switch(getAutoString(num)[i]) {
 		case 'a':
 			manipulatorTower(127);
 			break;
@@ -369,22 +358,23 @@ void interpretManipulatorTower(int num) { //possible bug - checks for each case 
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Finished function 'interpretManipulatorTower'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]interpretManipulatorTower ran '%d' many times",debugminutes,debugseconds,debugms,i);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Finished function 'interpretManipulatorTower'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
+
 /**
-/ loop through each command in the AutoString then exit.
+/ loop through each command in the AutoString then exit. - Mr. Spencer
 */
 void interpretManipulatorArm(int num) { //possible bug - checks for each case on every letter, but will only find a matching case on one of every 4, potentially throwing off execution times
 	if(debugoutput) {
-		writeDebugStreamLine("Running function 'interpretManipulatorArm'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Running function 'interpretManipulatorArm'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	int i;
-	char myAutoString[301] = getAutoString(num);
-	for(i = 0; i < strlen(myAutoString); i++) {
-		switch(myAutoString[i]) {
+	for(i = 0; i < strlen(getAutoString(num)); i++) {
+		switch(getAutoString(num)[i]) {
 		case 'i':
 			manipulatorArm(30);
 			break;
@@ -396,18 +386,27 @@ void interpretManipulatorArm(int num) { //possible bug - checks for each case on
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("interpretManipulatorArm ran '%d' many times",i);
-		writeDebugStreamLine("Finished function 'interpretManipulatorArm'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]interpretManipulatorArm ran '%d' many times",debugminutes,debugseconds,debugms,i);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][F]Finished function 'interpretManipulatorArm'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 //Tasks// - Ensure that scheduler is the lowest user-created task
-
 //These are the recording functions. When recording is on, it'll record the remote's actions to the debug log after a specified time interval.
+task debugtimer {
+	writeDebugStreamLine("[S][T] Task Started: 'debugtimer'");
+	while(debugoutput) {
+		debugminutes=time1[T4]/1000/60;
+		debugseconds=time1[T4]/1000-(debugminutes*60);
+		debugms=time1[T4]-(debugseconds*1000)-(debugminutes*60000);
+		wait1Msec(1);
+	}
+	writeDebugStreamLine("[S][T] Task Ended: 'debugtimer'");
+}
 task recordMoveLeft {
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'recordMoveLeft'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [R][T]Task Started: 'recordMoveLeft'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	while(true) {
 		if(autostart!=0) {
@@ -436,14 +435,14 @@ task recordMoveLeft {
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Task Ended: 'recordMoveLeft'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [R][T]Task Ended: 'recordMoveLeft'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 task recordMoveRight {
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'recordMoveRight'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [R][T]Task Started: 'recordMoveRight'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	while(true) {
 		if(autostart!=0) {
@@ -472,14 +471,14 @@ task recordMoveRight {
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Task Ended: 'recordMoveRight'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [R][T]Task Ended: 'recordMoveRight'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 task recordTower {
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'recordTower'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [R][T]Task Started: 'recordTower'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	while(true) {
 		if(autostart!=0) {
@@ -508,14 +507,14 @@ task recordTower {
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Task Ended: 'recordTower'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [R][T]Task Ended: 'recordTower'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 task recordArm {
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'recordArm'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [R][T]Task Started: 'recordArm'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	while(true) {
 		if(autostart!=0) {
@@ -544,15 +543,15 @@ task recordArm {
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Task Ended: 'recordArm'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [R][T]Task Ended: 'recordArm'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 //Autonomous LED Control - Logan
 task autoled { //Controls autonomous mode LED states
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'autoled'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [L][T]Task Started: 'autoled'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	ledmode=1;
 	while(ledmode==1) {
@@ -587,16 +586,16 @@ task autoled { //Controls autonomous mode LED states
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Task Ended: 'autoled'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [L][T]Task Ended: 'autoled'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 //Battery LED Control - Logan
 task batteryled() { //Controls battery mode LED states & power level assignments (needs to be split into a constantly running task) (or merge LED tasks into one)
 	ledmode=-1; //Used to switch between LED modes with the Debug mode on LCD
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'batteryled'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [L][T]Task Started: 'batteryled'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	while(ledmode==-1) {
 		power=SensorValue[PEPower]/280.0;
@@ -699,8 +698,8 @@ task batteryled() { //Controls battery mode LED states & power level assignments
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Task Ended: 'batteryled'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [L][T]Task Ended: 'batteryled'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 //LCD Task & Debug Mode - Logan
@@ -708,8 +707,8 @@ int	mainLoopCounter=0;
 int	debugLoopCounter=0;
 task lcd { //For LCD Autonomous Selection
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'lcd'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [D][T]Task Started: 'lcd'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	int leftbutton = 1; //aliases for button numbers on LCD
 	int centerbutton = 2;
@@ -735,6 +734,13 @@ task lcd { //For LCD Autonomous Selection
 				startTask(recordTower);
 				startTask(recordArm);
 				debugRecordStart=true;
+			}
+			if(debugRecordStart&&screen!=4) {
+				stopTask(recordMoveLeft);
+				stopTask(recordMoveRight);
+				stopTask(recordTower);
+				stopTask(recordArm);
+				debugRecordStart=false;
 			}
 			if(nLCDButtons==leftright&&screen==0) {
 				debug=false;
@@ -798,14 +804,14 @@ task lcd { //For LCD Autonomous Selection
 				}
 				if(nLCDButtons==centerbutton&&autostart!=-1) { //When center buttom pressed, initialize autonomous.
 					if(debugoutput) {
-						writeDebugStreamLine("Setting autostart to -1");
-						wait10Msec(1);
+						writeDebugStreamLine("[%dm:%ds:%dms] [D][T]Task 'lcd' setting autostart to -1",debugminutes,debugseconds,debugms);
+						wait1Msec(1);
 					}
 					autostart = -1;
 					clearTimer(T1);
 					if(debugoutput) {
-						writeDebugStreamLine("Starting autonomous");
-						wait10Msec(1);
+						writeDebugStreamLine("[%dm:%ds:%dms] [D][T]Task 'lcd starting task: 'autonomous'",debugminutes,debugseconds,debugms);
+						wait1Msec(1);
 					}
 					startTask(autonomous);
 				}
@@ -828,18 +834,10 @@ task lcd { //For LCD Autonomous Selection
 					switch(ledmode) {
 					case 1:
 						stopTask(batteryled);
-						if(debugoutput) {
-							writeDebugStreamLine("Task Stopped: 'batteryled'.");
-							wait10Msec(1);
-						}
 						startTask(autoled);
 						break;
 					case -1:
 						stopTask(autoled);
-						if(debugoutput) {
-							writeDebugStreamLine("Task Stopped: 'autoled'.");
-							wait10Msec(1);
-						}
 						startTask(batteryled);
 						break;
 					}
@@ -992,60 +990,6 @@ task lcd { //For LCD Autonomous Selection
 				displayLCDCenteredString(1, "Auto 2");
 				wait1Msec(100);
 				break;
-			case 3:
-				if(autoselect==1) {
-					displayLCDCenteredString(0,"Selected");
-					} else if(autoselect==0) {
-					displayLCDCenteredString(0,"");
-				}
-				displayLCDCenteredString(1, "Auto 3");
-				wait1Msec(100);
-				break;
-			case 4:
-				if(autoselect==1) {
-					displayLCDCenteredString(0,"Selected");
-					} else if(autoselect==0) {
-					displayLCDCenteredString(0,"");
-				}
-				displayLCDCenteredString(1, "Auto 4");
-				wait1Msec(100);
-				break;
-			case 5:
-				if(autoselect==1) {
-					displayLCDCenteredString(0,"Selected");
-					} else if(autoselect==0) {
-					displayLCDCenteredString(1, "");
-				}
-				displayLCDCenteredString(1, "Auto 5");
-				wait1Msec(100);
-				break;
-			case 6:
-				if(autoselect==1) {
-					displayLCDCenteredString(0,"Selected");
-					} else if(autoselect==0) {
-					displayLCDCenteredString(1, "");
-				}
-				displayLCDCenteredString(1, "Auto 6");
-				wait1Msec(100);
-				break;
-			case 7:
-				if(autoselect==1) {
-					displayLCDCenteredString(0,"Selected");
-					} else if(autoselect==0) {
-					displayLCDCenteredString(1, "");
-				}
-				displayLCDCenteredString(1, "Auto 7");
-				wait1Msec(100);
-				break;
-			case 8:
-				if(autoselect==1) {
-					displayLCDCenteredString(0,"Selected");
-					} else if(autoselect==0) {
-					displayLCDCenteredString(1, "");
-				}
-				displayLCDCenteredString(1,"Auto 8");
-				wait1Msec(100);
-				break;
 			}
 		}
 	}
@@ -1053,8 +997,9 @@ task lcd { //For LCD Autonomous Selection
 // Task Schedule - Logan
 task scheduler { //Schedules the startup of the bot and user-created tasks
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'scheduler'.");
-		wait10Msec(1);
+		startTask(debugtimer);
+		writeDebugStreamLine("[%dm:%ds:%dms] [S][T]Task Started: 'scheduler'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	bLCDBacklight = true;
 	startTask(autoled);
@@ -1062,18 +1007,18 @@ task scheduler { //Schedules the startup of the bot and user-created tasks
 	waitUntil(autoselect==1||autostart==1);
 	stopTask(lcd);
 	if(debugoutput) {
-		writeDebugStreamLine("Task Stopped: 'lcd'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [S][T]Task 'scheduler' stopped task 'lcd'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	stopTask(autoled);
 	if(debugoutput) {
-		writeDebugStreamLine("Task Stopped: 'autoled'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [S][T]Task 'scheduler' stopped tasl 'autoled'",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	startTask(batteryled);
 	if(debugoutput) {
-		writeDebugStreamLine("Task Ended: 'scheduler'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [S][T]Task Ended: 'scheduler'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 /////////
@@ -1082,14 +1027,15 @@ task scheduler { //Schedules the startup of the bot and user-created tasks
 void pre_auton()
 {
 	bStopTasksBetweenModes = false;
+	clearTimer(T4); //This timer is to be used for Debug statements only
 	startTask(scheduler);
 }
 //Autonomous - Logan
 task autonomous()
 {
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'autonomous'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][T]Task Started: 'autonomous'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	if(debug==false) {
 		autostart=1;
@@ -1100,69 +1046,19 @@ task autonomous()
 			autostart=0;
 		}
 		break;
-	case 1: //LOOOOOOOOOOOOOOOK JOOOORDAAAAAAAN
-		if(debugoutput) {
-			writeDebugStreamLine("Initialized case 1");
-			wait10Msec(1);
-		}
+	case 1:
 		prepAutoString(1); //Bug - When running the autonomous multiple times under the same boot, this runs more than once, adding more to the Autonomous string.
 		if(debugoutput) {
-			writeDebugStreamLine("Prepped Autonomous String");
-			wait10Msec(1);
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][S]Prepped Autonomous String");
+			wait1Msec(1);
 		}
+		startTask(recordArm);
 		if(debugoutput) {
-			writeDebugStreamLine("Starting recordArm w/ Autonomous");
-			wait10Msec(1);
+			writeDebugStreamLine("[%dm:%ds:%dms] [A][S]Started playback functions w/ Autonomous");
+			wait1Msec(1);
 		}
-		startTask(recordArm);//wait1Msec(recordWait*strlen(getAutoString(1))); //This grabs the strlen of auto1String, multiplies it by recordWait to give us the supposed length of the autonomous.
-		if(debugoutput) {
-			writeDebugStreamLine("Started recordArm w/ Autonomous");
-			wait10Msec(1);
-		}
-		//autostart=0; //Manually disables the LCD timer (fixed the issue of it randomly turning off, so this line is necessary)
-		//if(debugoutput) {
-		//	writeDebugStreamLine("Disabled LCD Timer");
-		//	wait10Msec(1);
-		//}
-		//writeDebugStreamLine("Difference from start to end: %d/",endTime-startTime); //Actually prints time to the debug log.
-		break; //You know what this does.
+		break;
 	case 2:
-		startTask(recordArm);
-		if(autostart==-1) {
-			autostart=0;
-		}
-		break;
-	case 3:
-		startTask(recordArm);
-		if(autostart==-1) {
-			autostart=0;
-		}
-		break;
-	case 4:
-		startTask(recordArm);
-		if(autostart==-1) {
-			autostart=0;
-		}
-		break;
-	case 5:
-		startTask(recordArm);
-		if(autostart==-1) {
-			autostart=0;
-		}
-		break;
-	case 6:
-		startTask(recordArm);
-		if(autostart==-1) {
-			autostart=0;
-		}
-		break;
-	case 7:
-		startTask(recordArm);
-		if(autostart==-1) {
-			autostart=0;
-		}
-		break;
-	case 8:
 		startTask(recordArm);
 		if(autostart==-1) {
 			autostart=0;
@@ -1170,8 +1066,8 @@ task autonomous()
 		break;
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Task Ended: 'autonomous'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [A][T]Task Ended: 'autonomous'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 }
 ////////////////////////
@@ -1180,8 +1076,8 @@ task autonomous()
 // - Logan & Carmen
 task usercontrol() {
 	if(debugoutput) {
-		writeDebugStreamLine("Task Started: 'usercontrol'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[%dm:%ds:%dms] [U][T]Task Started: 'usercontrol'.",debugminutes,debugseconds,debugms);
+		wait1Msec(1);
 	}
 	while (true) {
 		if(!debug) { //Normal Controls when not in Debug mode.
@@ -1235,7 +1131,7 @@ task usercontrol() {
 		}
 	}
 	if(debugoutput) {
-		writeDebugStreamLine("Task Ended: 'usercontrol'.");
-		wait10Msec(1);
+		writeDebugStreamLine("[U][T]Task Ended: 'usercontrol'.");
+		wait1Msec(1);
 	}
 }
